@@ -1,0 +1,967 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#103f83">
+
+<title>ThinkingSkill | Human Thinking for a Smarter Future</title>
+<meta name="description" content="Machines are trained. Human thinking needs opportunities to grow, too. Explore Think Lab and Python Learners Lounge by ThinkingSkill.">
+
+<style>
+:root{
+  --navy:#103f83;
+  --blue:#0879c9;
+  --green:#168447;
+  --purple:#7135bd;
+  --gold:#ffd629;
+  --ink:#20334b;
+  --muted:#617187;
+  --pale:#f1f8ff;
+  --line:#dbe6f0;
+  --white:#ffffff;
+}
+
+*{box-sizing:border-box}
+
+html{
+  scroll-behavior:smooth;
+  scroll-padding-top:90px;
+}
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  color:var(--ink);
+  line-height:1.6;
+  background:#fff;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+.container{
+  width:min(1160px,92%);
+  margin:auto;
+}
+
+/* NAVIGATION */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(255,255,255,.97);
+  border-bottom:1px solid var(--line);
+}
+
+.nav{
+  min-height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  position:relative;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--navy);
+  font-size:1.65rem;
+  font-weight:900;
+  letter-spacing:-1px;
+}
+
+.brand-icon{
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  border:2px solid var(--blue);
+  border-radius:50%;
+  font-size:1.65rem;
+  color:var(--blue);
+  position:relative;
+}
+
+.brand-name span{
+  color:var(--blue);
+}
+
+/* HAMBURGER */
+
+.menu-toggle{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:5px;
+  width:46px;
+  height:46px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+  cursor:pointer;
+  flex-shrink:0;
+}
+
+.menu-toggle:hover{
+  background:var(--pale);
+}
+
+.menu-toggle span{
+  display:block;
+  width:22px;
+  height:3px;
+  border-radius:3px;
+  background:var(--navy);
+  transition:transform .2s,opacity .2s;
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(1){
+  transform:translateY(8px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(2){
+  opacity:0;
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(3){
+  transform:translateY(-8px) rotate(-45deg);
+}
+
+.nav-links{
+  display:none;
+  position:absolute;
+  right:0;
+  top:calc(100% + 1px);
+  width:min(300px,92vw);
+  padding:12px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-top:3px solid var(--navy);
+  border-radius:0 0 14px 14px;
+  box-shadow:0 16px 35px #102a431a;
+}
+
+.nav-links.open{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.nav-links a{
+  padding:11px 13px;
+  border-radius:8px;
+  font-weight:700;
+}
+
+.nav-links a:hover{
+  background:var(--pale);
+  color:var(--blue);
+}
+
+.nav-links .nav-cta{
+  margin-top:5px;
+  background:var(--navy);
+  color:#fff;
+  text-align:center;
+}
+
+/* BUTTONS */
+
+.btn{
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  padding:12px 21px;
+  border:2px solid transparent;
+  border-radius:10px;
+  font-weight:800;
+  transition:transform .2s,background .2s;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+}
+
+.btn-primary{
+  background:var(--blue);
+  color:#fff;
+}
+
+.btn-primary:hover{
+  background:var(--navy);
+}
+
+.btn-green{
+  border-color:var(--green);
+  background:#fff;
+  color:var(--green);
+}
+
+.btn-green:hover{
+  background:#eaf8ef;
+}
+
+.btn-outline{
+  border-color:#b8c9d8;
+  color:var(--navy);
+  background:#fff;
+}
+
+/* HERO */
+
+.hero{
+  padding:76px 0 72px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 85% 25%,#dcefff 0,transparent 32%),
+    linear-gradient(135deg,#fff 0%,#f2f9ff 100%);
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.08fr .92fr;
+  align-items:center;
+  gap:44px;
+}
+
+.eyebrow{
+  display:inline-block;
+  padding:7px 14px;
+  border-radius:50px;
+  background:#e0efff;
+  color:var(--blue);
+  font-size:.83rem;
+  font-weight:800;
+  letter-spacing:.3px;
+}
+
+h1{
+  margin:22px 0;
+  color:var(--navy);
+  font-size:clamp(2.6rem,5.1vw,4.25rem);
+  line-height:1.09;
+  letter-spacing:-1.8px;
+}
+
+h1 .highlight{
+  color:var(--blue);
+}
+
+.hero-copy{
+  max-width:560px;
+  color:var(--muted);
+  font-size:1.2rem;
+  line-height:1.75;
+}
+
+.hero-copy strong{
+  color:var(--navy);
+}
+
+.hero-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:13px;
+  margin-top:28px;
+}
+
+.hero-footnote{
+  margin-top:20px;
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+/* HUMAN + MACHINE VISUAL */
+
+.visual{
+  min-width:0;
+  text-align:center;
+}
+
+.mind-comparison{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  align-items:stretch;
+  position:relative;
+}
+
+.mind-card{
+  padding:24px 12px 20px;
+  border:1px solid #d5e5f5;
+  border-radius:22px;
+  background:rgba(255,255,255,.84);
+  box-shadow:0 12px 35px #103f830b;
+  position:relative;
+}
+
+.mind-card.human{
+  border-top:5px solid var(--blue);
+}
+
+.mind-card.machine{
+  border-top:5px solid var(--purple);
+}
+
+.mind-symbol{
+  width:112px;
+  height:112px;
+  display:grid;
+  place-items:center;
+  margin:0 auto 16px;
+  border-radius:50%;
+  font-size:4.1rem;
+}
+
+.human .mind-symbol{
+  background:linear-gradient(145deg,#d9edff,#a8d5ff);
+}
+
+.machine .mind-symbol{
+  background:linear-gradient(145deg,#eee2ff,#d4c0ff);
+}
+
+.mind-card h2{
+  margin:0 0 7px;
+  color:var(--navy);
+  font-size:1.3rem;
+}
+
+.machine h2{
+  color:var(--purple);
+}
+
+.mind-card p{
+  margin:0;
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+.mind-card .mini-label{
+  display:block;
+  margin-top:13px;
+  font-size:.75rem;
+  font-weight:800;
+  letter-spacing:.6px;
+  text-transform:uppercase;
+  color:var(--blue);
+}
+
+.machine .mini-label{
+  color:var(--purple);
+}
+
+.equation{
+  margin:24px 0 0;
+  padding:15px 10px;
+  color:var(--navy);
+  font-size:1.18rem;
+  font-weight:900;
+  line-height:1.5;
+}
+
+.equation span{
+  color:var(--green);
+}
+
+.visual-note{
+  margin:0;
+  color:var(--muted);
+  font-size:.87rem;
+}
+
+/* THREE CONTENT BLOCKS */
+
+.pathways{
+  padding:58px 0;
+  background:#f0f8ff;
+}
+
+.pathway-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0;
+}
+
+.pathway-card{
+  padding:8px 30px 16px;
+  border-right:1px solid #c8dff4;
+  min-width:0;
+}
+
+.pathway-card:first-child{
+  padding-left:8px;
+}
+
+.pathway-card:last-child{
+  border-right:none;
+  padding-right:8px;
+}
+
+.card-heading{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-bottom:13px;
+}
+
+.card-icon{
+  width:62px;
+  height:62px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  font-size:2rem;
+  flex-shrink:0;
+}
+
+.card-icon.think{
+  background:#fff3c8;
+}
+
+.card-icon.python{
+  background:#c9f5e6;
+}
+
+.card-icon.contact{
+  background:#e8dcff;
+}
+
+.pathway-card h2{
+  margin:0;
+  color:var(--navy);
+  font-size:1.42rem;
+  line-height:1.3;
+}
+
+.pathway-card p{
+  margin:0 0 16px;
+  color:var(--muted);
+  font-size:.97rem;
+}
+
+.pathway-card .btn{
+  padding:9px 17px;
+  font-size:.9rem;
+}
+
+.url-label{
+  display:block;
+  margin-top:8px;
+  overflow-wrap:anywhere;
+  color:var(--muted);
+  font-size:.83rem;
+}
+
+/* CLOSING MESSAGE */
+
+.closing{
+  padding:60px 0;
+  text-align:center;
+}
+
+.closing h2{
+  margin:0 0 12px;
+  color:var(--navy);
+  font-size:clamp(1.8rem,3.5vw,2.6rem);
+  line-height:1.25;
+}
+
+.closing p{
+  max-width:680px;
+  margin:0 auto 22px;
+  color:var(--muted);
+  font-size:1.05rem;
+}
+
+/* FOOTER */
+
+footer{
+  padding:27px 0;
+  border-top:1px solid var(--line);
+  background:#fff;
+}
+
+.footer-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.footer-brand{
+  color:var(--navy);
+  font-size:1.15rem;
+  font-weight:900;
+}
+
+.footer-brand span{
+  color:var(--blue);
+}
+
+.footer-tagline{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:.76rem;
+  letter-spacing:2px;
+}
+
+.footer-contact{
+  color:var(--blue);
+  font-weight:700;
+  overflow-wrap:anywhere;
+}
+
+.copyright{
+  margin-top:15px;
+  padding-top:14px;
+  border-top:1px solid #edf1f5;
+  text-align:center;
+  color:var(--muted);
+  font-size:.8rem;
+}
+
+/* RESPONSIVE */
+
+@media(min-width:761px){
+  .nav-links.open{
+    display:flex;
+  }
+}
+
+@media(max-width:900px){
+  .hero-grid{
+    grid-template-columns:1fr;
+    gap:38px;
+  }
+
+  .hero-copy{
+    max-width:680px;
+  }
+
+  .visual{
+    width:min(560px,100%);
+    margin:auto;
+  }
+
+  .pathway-card{
+    padding-left:18px;
+    padding-right:18px;
+  }
+
+  .pathway-card h2{
+    font-size:1.2rem;
+  }
+}
+
+@media(max-width:650px){
+  .nav{
+    min-height:68px;
+  }
+
+  .brand{
+    font-size:1.4rem;
+  }
+
+  .brand-icon{
+    width:38px;
+    height:38px;
+    font-size:1.4rem;
+  }
+
+  .hero{
+    padding:48px 0 45px;
+  }
+
+  h1{
+    font-size:clamp(2.35rem,10vw,3.3rem);
+    letter-spacing:-1.2px;
+  }
+
+  .hero-copy{
+    font-size:1.05rem;
+  }
+
+  .hero-actions{
+    flex-direction:column;
+  }
+
+  .hero-actions .btn{
+    width:100%;
+  }
+
+  .mind-comparison{
+    gap:10px;
+  }
+
+  .mind-card{
+    padding:19px 8px;
+  }
+
+  .mind-symbol{
+    width:82px;
+    height:82px;
+    font-size:3rem;
+  }
+
+  .mind-card h2{
+    font-size:1.1rem;
+  }
+
+  .mind-card p{
+    font-size:.82rem;
+  }
+
+  .equation{
+    font-size:1.02rem;
+  }
+
+  .pathways{
+    padding:36px 0;
+  }
+
+  .pathway-grid{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+
+  .pathway-card,
+  .pathway-card:first-child,
+  .pathway-card:last-child{
+    padding:23px 5px;
+    border-right:none;
+    border-bottom:1px solid #c8dff4;
+  }
+
+  .pathway-card:last-child{
+    border-bottom:none;
+  }
+
+  .pathway-card h2{
+    font-size:1.3rem;
+  }
+
+  .closing{
+    padding:45px 0;
+  }
+
+  .footer-inner{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+
+  *,
+  *::before,
+  *::after{
+    transition:none!important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="container nav">
+
+    <a class="brand" href="#home" aria-label="ThinkingSkill home">
+      <span class="brand-icon" aria-hidden="true">🧠</span>
+      <span class="brand-name">Thinking<span>Skill</span></span>
+    </a>
+
+    <button
+      class="menu-toggle"
+      id="menuToggle"
+      type="button"
+      aria-label="Open navigation menu"
+      aria-controls="mainNavigation"
+      aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="nav-links" id="mainNavigation" aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#about">Our Purpose</a>
+      <a href="https://thinklab.thinkingskill.in/">Think Lab</a>
+      <a href="https://pylab.thinkingskill.in/">Python Learners Lounge</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+  </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+
+<section class="hero" id="home">
+  <div class="container hero-grid">
+
+    <div>
+      <span class="eyebrow">BETTER THINKERS. A BRIGHTER FUTURE.</span>
+
+      <h1>
+        ThinkingSkill is vital—
+        <span class="highlight">be it human or machine.</span>
+      </h1>
+
+      <p class="hero-copy">
+        While machines are trained so much, we parallelly provide
+        opportunities to train <strong>human thinking.</strong>
+      </p>
+
+      <p class="hero-copy">
+        Because a smarter future needs more than intelligent machines.
+        It needs people who can think, question, solve problems,
+        imagine possibilities and create.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary"
+           href="https://thinklab.thinkingskill.in/">
+          Explore Think Lab <span aria-hidden="true">→</span>
+        </a>
+
+        <a class="btn btn-green"
+           href="https://pylab.thinkingskill.in/">
+          Python Learners Lounge <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <p class="hero-footnote">
+        Think thoughtfully. Learn continuously. Create meaningfully.
+      </p>
+    </div>
+
+    <div class="visual" aria-label="Human thinking and machine intelligence">
+
+      <div class="mind-comparison">
+
+        <article class="mind-card human">
+          <div class="mind-symbol" aria-hidden="true">🧠</div>
+          <h2>Human Thinking</h2>
+          <p>Curiosity · Creativity</p>
+          <p>Reasoning · Judgement</p>
+          <span class="mini-label">Develop human potential</span>
+        </article>
+
+        <article class="mind-card machine">
+          <div class="mind-symbol" aria-hidden="true">🤖</div>
+          <h2>Machine Intelligence</h2>
+          <p>Data · Patterns</p>
+          <p>Processing · Automation</p>
+          <span class="mini-label">Train and build technology</span>
+        </article>
+
+      </div>
+
+      <div class="equation">
+        Human Thinking + Machine Power<br>
+        <span>= A Smarter Future</span>
+      </div>
+
+      <p class="visual-note">
+        Let technology advance while human thinking continues to grow.
+      </p>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- PURPOSE -->
+
+<section class="closing" id="about">
+  <div class="container">
+    <h2>Machines learn from training.<br>People grow through opportunity.</h2>
+
+    <p>
+      ThinkingSkill creates pathways for people to strengthen
+      their thinking and learning skills, while exploring the
+      possibilities of technology and programming.
+    </p>
+
+    <p>
+      <strong>Our aim:</strong> to help people become confident
+      thinkers, capable learners and creative problem-solvers.
+    </p>
+  </div>
+</section>
+
+<!-- OUR PLATFORMS AND CONTACT -->
+
+<section class="pathways" id="contact">
+  <div class="container pathway-grid">
+
+    <article class="pathway-card">
+      <div class="card-heading">
+        <div class="card-icon think" aria-hidden="true">💡</div>
+        <h2>Think Lab</h2>
+      </div>
+
+      <p>
+        Build stronger problem-solvers, creators and thinkers.
+        Discover stories, puzzles and opportunities for families
+        to grow in values and thinking skills.
+      </p>
+
+      <a class="btn btn-primary"
+         href="https://thinklab.thinkingskill.in/">
+        Visit Think Lab →
+      </a>
+
+      <span class="url-label">thinklab.thinkingskill.in</span>
+    </article>
+
+    <article class="pathway-card">
+      <div class="card-heading">
+        <div class="card-icon python" aria-hidden="true">🐍</div>
+        <h2>Python Learners Lounge</h2>
+      </div>
+
+      <p>
+        Learn Python step by step. Explore programming concepts,
+        develop problem-solving skills and bring ideas to life
+        through projects and games.
+      </p>
+
+      <a class="btn btn-green"
+         href="https://pylab.thinkingskill.in/">
+        Visit Python Learners Lounge →
+      </a>
+
+      <span class="url-label">pylab.thinkingskill.in</span>
+    </article>
+
+    <article class="pathway-card">
+      <div class="card-heading">
+        <div class="card-icon contact" aria-hidden="true">✉️</div>
+        <h2>Get in Touch</h2>
+      </div>
+
+      <p>
+        Have a question, an idea or an opportunity to collaborate?
+        We would love to hear from you.
+      </p>
+
+      <a class="btn"
+         style="border-color:var(--purple);color:var(--purple)"
+         href="mailto:hello@thinkingskill.in">
+        ✉ hello@thinkingskill.in
+      </a>
+
+      <span class="url-label">Let's connect and grow together.</span>
+    </article>
+
+  </div>
+</section>
+
+<!-- CLOSING CALL TO ACTION -->
+
+<section class="closing">
+  <div class="container">
+    <h2>The future needs both.</h2>
+    <p>
+      Technology can expand what we do.
+      Thinking helps us decide what is worth doing.
+    </p>
+    <a class="btn btn-primary"
+       href="https://thinklab.thinkingskill.in/">
+      Start Exploring with Think Lab →
+    </a>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+  <div class="container">
+
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">
+          Thinking<span>Skill</span>
+        </div>
+        <div class="footer-tagline">
+          THINK · LEARN · CREATE · GROW
+        </div>
+      </div>
+
+      <a class="footer-contact"
+         href="mailto:hello@thinkingskill.in">
+        hello@thinkingskill.in
+      </a>
+    </div>
+
+    <div class="copyright">
+      © <span id="currentYear"></span> ThinkingSkill. All rights reserved.
+    </div>
+
+  </div>
+</footer>
+
+<script>
+(function(){
+  const toggle = document.getElementById('menuToggle');
+  const nav = document.getElementById('mainNavigation');
+
+  function closeMenu(){
+    nav.classList.remove('open');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','Open navigation menu');
+  }
+
+  toggle.addEventListener('click',function(){
+    const isOpen = nav.classList.contains('open');
+
+    if(isOpen){
+      closeMenu();
+    }else{
+      nav.classList.add('open');
+      toggle.setAttribute('aria-expanded','true');
+      toggle.setAttribute('aria-label','Close navigation menu');
+    }
+  });
+
+  nav.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click',closeMenu);
+  });
+
+  document.addEventListener('click',function(event){
+    if(!nav.contains(event.target) && !toggle.contains(event.target)){
+      closeMenu();
+    }
+  });
+
+  document.addEventListener('keydown',function(event){
+    if(event.key === 'Escape'){
+      closeMenu();
+      toggle.focus();
+    }
+  });
+
+  document.getElementById('currentYear').textContent =
+    new Date().getFullYear();
+})();
+</script>
+
+</body>
+</html>
