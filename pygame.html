@@ -1,0 +1,1000 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Python Course - Think Lab</title>
+
+<style>
+    :root {
+        --primary: #d95a1e;
+        --primary-hover: #b5451b;
+        --bg-color: #fffbf0;
+        --card-bg: #ffffff;
+        --text-color: #1e293b;
+        --border-color: #cbd5e1;
+        --success-color: #10b981;
+    }
+
+    body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 16px 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
+    .form-container {
+        background-color: var(--card-bg);
+        width: 100%;
+        max-width: 520px;
+        padding: 25px 30px;
+        border-radius: 14px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+                    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+    }
+
+    .nav-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .nav-btn,
+    .btn-brochure {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 10px 12px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        color: white;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .btn-pylab {
+        background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+        box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2);
+    }
+
+    .btn-pylab:hover {
+        opacity: 0.92;
+        transform: translateY(-1px);
+    }
+
+    .btn-brochure {
+        background: linear-gradient(135deg, #1769aa, #102a43);
+        box-shadow: 0 4px 10px rgba(23, 105, 170, 0.2);
+    }
+
+    .btn-brochure:hover {
+        transform: translateY(-2px);
+        opacity: 0.92;
+    }
+
+    .stats-banner {
+        background: #fff7f0;
+        border: 1px solid #fed7aa;
+        color: #c2410c;
+        padding: 11px 16px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 22px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .stats-banner:hover {
+        background: #ffedd5;
+        transform: translateY(-1px);
+    }
+
+    .stats-banner b {
+        color: #9a3412;
+        background: #ffffff;
+        padding: 2px 8px;
+        border-radius: 6px;
+        border: 1px solid #fdba74;
+    }
+
+    h2 {
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-size: 26px;
+        color: #b5451b;
+        text-align: center;
+    }
+
+    p.subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 24px;
+        font-size: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        color: #333;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    select {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        box-sizing: border-box;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="tel"]:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(217, 90, 30, 0.15);
+    }
+
+    .batch-message {
+        display: block;
+        margin-top: 6px;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background-color: #fffaf0;
+        padding: 12px;
+        border: 1px solid #fed7aa;
+        border-radius: 8px;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        font-weight: normal;
+        font-size: 14px;
+        cursor: pointer;
+        margin-bottom: 0;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        margin-right: 10px;
+        width: 16px;
+        height: 16px;
+        accent-color: var(--primary);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    button[type="submit"],
+    .btn-secondary {
+        width: 100%;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 10px;
+        box-shadow: 0 4px 15px rgba(217, 90, 30, 0.3);
+    }
+
+    button[type="submit"]:hover:not(:disabled) {
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
+    }
+
+    button[type="submit"]:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+    }
+
+    .btn-secondary {
+        background-color: #fff;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+        background-color: #fff7f0;
+    }
+
+    .success-container {
+        display: none;
+        text-align: center;
+        padding: 30px 10px;
+    }
+
+    .success-icon {
+        width: 60px;
+        height: 60px;
+        background-color: #d1fae5;
+        color: var(--success-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px auto;
+        font-size: 28px;
+    }
+
+    .success-container h3 {
+        color: #065f46;
+        margin: 0 0 8px 0;
+        font-size: 22px;
+    }
+
+    .success-container p {
+        color: #4b5563;
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+
+    /* Registration statistics popup */
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .modal-content {
+        background: #ffffff;
+        width: 100%;
+        max-width: 480px;
+        padding: 25px;
+        border-radius: 14px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        position: relative;
+        max-height: 85vh;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        gap: 10px;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #b5451b;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #64748b;
+    }
+
+    .stat-section {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .stat-section h4 {
+        margin: 0 0 6px 0;
+        font-size: 14px;
+        color: #b5451b;
+        border-bottom: 2px solid #fed7aa;
+        padding-bottom: 4px;
+    }
+
+    .names-select {
+        width: 100%;
+        background: #f8fafc;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 6px;
+        font-size: 13px;
+        color: #334155;
+        margin-top: 4px;
+    }
+
+    @media (max-width: 480px) {
+        body {
+            align-items: flex-start;
+            padding: 10px 8px;
+        }
+
+        .form-container {
+            padding: 20px 15px;
+        }
+
+        .nav-header {
+            gap: 8px;
+        }
+
+        .nav-btn,
+        .btn-brochure {
+            font-size: 11px;
+            padding: 9px 8px;
+        }
+
+        .modal-content {
+            padding: 18px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <!-- Navigation -->
+    <div class="nav-header">
+        <a class="nav-btn btn-pylab"
+           href="https://pietraining.github.io/python/">
+            ← Back to PyLab
+        </a>
+
+        <a class="btn-brochure"
+           href="https://drive.google.com/file/d/1bmojy4Dx41MxXfHPWyyMZPM7c4EO2tIi/view?usp=drive_link"
+           target="_blank"
+           rel="noopener noreferrer">
+            📘 Course Brochure ↗
+        </a>
+    </div>
+
+    <!-- Live Registration Status -->
+    <div class="stats-banner"
+         id="statsBanner"
+         onclick="openModal()">
+        📊 Loading Live Registration Status...
+    </div>
+
+    <h2>Free Python Course</h2>
+
+    <p class="subtitle" id="formSubtitle">
+        Please fill out your details below to enroll.
+    </p>
+
+    <!-- Hidden iframe for Google Forms submission -->
+    <iframe
+        name="hidden_iframe"
+        id="hidden_iframe"
+        style="display:none;"
+        title="Registration submission"
+        onload="if(submitted) { showSuccessMessage(); }">
+    </iframe>
+
+    <!-- Registration Form -->
+    <form
+        id="registrationForm"
+        action="https://docs.google.com/forms/d/e/1FAIpQLSeRQBAZLN8KrDetU94mc1afDx6l7jNuNLNCVlgO_-g0the9LA/formResponse"
+        method="POST"
+        target="hidden_iframe"
+        onsubmit="return handleRegistrationSubmit();">
+
+        <!-- BATCH CODE VALIDATION -->
+        <div class="form-group">
+            <label for="batchCode">Batch Code</label>
+
+            <input
+                type="text"
+                id="batchCode"
+                placeholder="Enter your batch code"
+                autocomplete="off"
+                autocapitalize="off"
+                spellcheck="false"
+                required
+                aria-describedby="batchCodeMessage">
+
+            <small
+                id="batchCodeMessage"
+                class="batch-message"
+                aria-live="polite">
+                Enter the valid batch code to enable registration.
+            </small>
+        </div>
+
+        <!-- Full Name -->
+        <div class="form-group">
+            <label for="nameInput">Full Name</label>
+
+            <input
+                type="text"
+                id="nameInput"
+                name="entry.1215900612"
+                placeholder="Enter your full name"
+                required>
+        </div>
+
+        <!-- Country -->
+        <div class="form-group">
+            <label for="countryInput">Country</label>
+
+            <input
+                type="text"
+                id="countryInput"
+                name="entry.2068278968"
+                placeholder="e.g. India, Singapore"
+                required>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+            <label for="categorySelect">Category</label>
+
+            <select
+                id="categorySelect"
+                name="entry.38679720"
+                required>
+                <option value="" disabled selected>
+                    Select your category
+                </option>
+                <option value="Working Professional">
+                    Working Professional
+                </option>
+                <option value="School Student">
+                    School Student
+                </option>
+                <option value="College Student">
+                    College Student
+                </option>
+                <option value="Educator">
+                    Educator
+                </option>
+            </select>
+        </div>
+
+        <!-- WhatsApp Number -->
+        <div class="form-group">
+            <label for="whatsappInput">WhatsApp Number</label>
+
+            <input
+                type="tel"
+                id="whatsappInput"
+                name="entry.995387167"
+                placeholder="e.g. +91 9876543210"
+                required>
+        </div>
+
+        <!-- Modules -->
+        <div class="form-group">
+            <label>
+                Choose the Modules (Select one or more)
+            </label>
+
+            <div class="checkbox-group">
+
+                <label class="checkbox-label">
+                    <input
+                        type="checkbox"
+                        name="entry.338072554"
+                        value="Introduction to Python">
+                    Introduction to Python
+                </label>
+
+                <label class="checkbox-label">
+                    <input
+                        type="checkbox"
+                        name="entry.338072554"
+                        value="Object Oriented Programming">
+                    Object Oriented Programming
+                </label>
+
+                <label class="checkbox-label">
+                    <input
+                        type="checkbox"
+                        name="entry.338072554"
+                        value="Pygame">
+                    Pygame
+                </label>
+
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+            type="submit"
+            id="submitBtn"
+            disabled>
+            Validate Batch Code First
+        </button>
+
+    </form>
+
+    <!-- Success Message -->
+    <div class="success-container" id="successContainer">
+
+        <div class="success-icon">✓</div>
+
+        <h3>Successfully Registered!</h3>
+
+        <p>
+            Thank you for enrolling in the Free Python Course.
+            Your details have been recorded successfully.
+        </p>
+
+        <button
+            type="button"
+            class="btn-secondary"
+            onclick="resetForm()">
+            Register Another Participant
+        </button>
+
+    </div>
+
+</div>
+
+<!-- Registration Statistics Modal -->
+<div
+    class="modal-overlay"
+    id="statsModal"
+    onclick="handleModalOutsideClick(event)">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h3>Module Breakdown &amp; Participants</h3>
+
+            <button
+                type="button"
+                class="close-btn"
+                onclick="closeModal()"
+                aria-label="Close popup">
+                &times;
+            </button>
+        </div>
+
+        <div id="modalBody">
+            <p style="text-align:center; color:#64748b;">
+                Loading breakdown...
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let submitted = false;
+
+    // ==========================================
+    // BATCH CODE VALIDATION
+    // ==========================================
+
+    const VALID_BATCH_CODE = 'Py3110';
+
+    const batchCodeInput = document.getElementById('batchCode');
+    const batchCodeMessage = document.getElementById('batchCodeMessage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function validateBatchCode() {
+        const enteredCode = batchCodeInput.value.trim();
+        const isValid = enteredCode === VALID_BATCH_CODE;
+
+        // Never enable submission while a request is in progress.
+        submitBtn.disabled = !isValid || submitted;
+
+        if (isValid) {
+            batchCodeMessage.textContent =
+                '✓ Valid batch code. You can register now.';
+
+            batchCodeMessage.style.color = '#059669';
+
+            if (!submitted) {
+                submitBtn.innerText = 'Submit Registration';
+            }
+        } else {
+            batchCodeMessage.textContent = enteredCode
+                ? '✗ Invalid batch code. Please try again.'
+                : 'Enter the valid batch code to enable registration.';
+
+            batchCodeMessage.style.color = enteredCode
+                ? '#dc2626'
+                : '#64748b';
+
+            if (!submitted) {
+                submitBtn.innerText = 'Validate Batch Code First';
+            }
+        }
+
+        return isValid;
+    }
+
+    batchCodeInput.addEventListener('input', validateBatchCode);
+
+    // Validate again when the form is submitted.
+    function handleRegistrationSubmit() {
+        if (!validateBatchCode()) {
+            batchCodeInput.focus();
+            return false;
+        }
+
+        if (submitted) {
+            return false;
+        }
+
+        submitted = true;
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Submitting...';
+
+        return true;
+    }
+
+    // ==========================================
+    // LIVE REGISTRATION STATISTICS
+    // ==========================================
+
+    const csvUrl =
+        'https://docs.google.com/spreadsheets/d/e/2PACX-1vQJCV-KUn60ipapKwOxsbZCiDIgopMTZ2djss2pwY1la0UfLQnJr9nd-GOABGjxUXFeXKethhfsrcBd/pub?gid=308253844&single=true&output=csv';
+
+    let registrationData = {
+        total: 0,
+
+        moduleNamesList: [
+            'Introduction to Python',
+            'Object Oriented Programming',
+            'Pygame'
+        ],
+
+        moduleNames: {
+            'Introduction to Python': [],
+            'Object Oriented Programming': [],
+            'Pygame': []
+        }
+    };
+
+    // ==========================================
+    // SUCCESS MESSAGE
+    // ==========================================
+
+    function showSuccessMessage() {
+        if (!submitted) return;
+
+        document.getElementById('registrationForm').style.display = 'none';
+
+        document.getElementById('formSubtitle').style.display = 'none';
+
+        document.getElementById('successContainer').style.display = 'block';
+
+        setTimeout(fetchRegistrationStats, 3500);
+    }
+
+    // ==========================================
+    // RESET FORM FOR ANOTHER PARTICIPANT
+    // ==========================================
+
+    function resetForm() {
+        submitted = false;
+
+        const formElement = document.getElementById('registrationForm');
+
+        formElement.reset();
+
+        formElement.style.display = 'block';
+
+        document.getElementById('formSubtitle').style.display = 'block';
+
+        document.getElementById('successContainer').style.display = 'none';
+
+        // Reset the batch-code validation.
+        // The participant must enter Py3110 again.
+        validateBatchCode();
+
+        batchCodeInput.focus();
+    }
+
+    // ==========================================
+    // FETCH REGISTRATION STATISTICS
+    // ==========================================
+
+    async function fetchRegistrationStats() {
+        try {
+            const response = await fetch(csvUrl);
+
+            if (!response.ok) {
+                throw new Error('Unable to fetch registration data.');
+            }
+
+            const csvText = await response.text();
+
+            parseCSV(csvText);
+
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+
+            document.getElementById('statsBanner').textContent =
+                '📊 Registration statistics temporarily unavailable.';
+        }
+    }
+
+    // ==========================================
+    // PARSE CSV
+    // ==========================================
+
+    function parseCSV(text) {
+        // CSV parser supporting quoted fields and commas.
+        function parseCSVRows(csv) {
+            const rows = [];
+            let row = [];
+            let field = '';
+            let inQuote = false;
+
+            for (let i = 0; i < csv.length; i++) {
+                const char = csv[i];
+                const nextChar = csv[i + 1];
+
+                if (char === '"') {
+                    if (inQuote && nextChar === '"') {
+                        field += '"';
+                        i++;
+                    } else {
+                        inQuote = !inQuote;
+                    }
+                } else if (char === ',' && !inQuote) {
+                    row.push(field.trim());
+                    field = '';
+                } else if (
+                    (char === '\n' || char === '\r') &&
+                    !inQuote
+                ) {
+                    if (char === '\r' && nextChar === '\n') {
+                        i++;
+                    }
+
+                    row.push(field.trim());
+
+                    if (row.some(value => value !== '')) {
+                        rows.push(row);
+                    }
+
+                    row = [];
+                    field = '';
+                } else {
+                    field += char;
+                }
+            }
+
+            if (field !== '' || row.length > 0) {
+                row.push(field.trim());
+
+                if (row.some(value => value !== '')) {
+                    rows.push(row);
+                }
+            }
+
+            return rows;
+        }
+
+        const rows = parseCSVRows(text);
+
+        if (rows.length < 2) return;
+
+        let total = 0;
+
+        const moduleNames = {
+            'Introduction to Python': [],
+            'Object Oriented Programming': [],
+            'Pygame': []
+        };
+
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+
+            // Existing published sheet column mapping:
+            // row[1] = Full Name
+            // row[2] = Category
+            // row[3] = Choose the Modules
+            // row[4] = Country
+
+            if (!row[1]) continue;
+
+            total++;
+
+            const name = row[1].trim() || 'Unknown';
+
+            const category = row[2] && row[2].trim()
+                ? row[2].trim()
+                : 'Participant';
+
+            const modulesRaw = row[3] && row[3].trim()
+                ? row[3].trim()
+                : '';
+
+            const country = row[4] && row[4].trim()
+                ? row[4].trim()
+                : 'Other';
+
+            const displayEntry =
+                `${name} (${category}, ${country})`;
+
+            if (modulesRaw) {
+                const selectedMods = modulesRaw
+                    .split(',')
+                    .map(module => module.trim());
+
+                selectedMods.forEach(mod => {
+                    for (const knownMod of Object.keys(moduleNames)) {
+                        if (
+                            mod.toLowerCase() === knownMod.toLowerCase()
+                        ) {
+                            if (
+                                !moduleNames[knownMod].includes(displayEntry)
+                            ) {
+                                moduleNames[knownMod].push(displayEntry);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        registrationData = {
+            total,
+
+            moduleNamesList: [
+                'Introduction to Python',
+                'Object Oriented Programming',
+                'Pygame'
+            ],
+
+            moduleNames
+        };
+
+        document.getElementById('statsBanner').innerHTML =
+            `📊 Live Registration Status: <b>${total} Enrolled</b> (Click for breakdown)`;
+    }
+
+    // ==========================================
+    // OPEN STATISTICS MODAL
+    // ==========================================
+
+    function openModal() {
+        const modalBody = document.getElementById('modalBody');
+
+        // Build the popup using text nodes so participant names
+        // are displayed as text rather than interpreted as HTML.
+        modalBody.replaceChildren();
+
+        const totalSection = document.createElement('div');
+        totalSection.className = 'stat-section';
+
+        const totalHeading = document.createElement('h4');
+        totalHeading.style.marginBottom = '0';
+        totalHeading.textContent =
+            `Total Enrolled Participants: ${registrationData.total}`;
+
+        totalSection.appendChild(totalHeading);
+        modalBody.appendChild(totalSection);
+
+        registrationData.moduleNamesList.forEach(moduleName => {
+            const namesArray =
+                registrationData.moduleNames[moduleName] || [];
+
+            const section = document.createElement('div');
+            section.className = 'stat-section';
+
+            const heading = document.createElement('h4');
+            heading.textContent = moduleName;
+
+            const count = document.createElement('span');
+            count.style.float = 'right';
+            count.style.fontWeight = 'normal';
+            count.style.fontSize = '13px';
+            count.style.color = '#64748b';
+            count.textContent = `Total: ${namesArray.length}`;
+
+            heading.appendChild(count);
+            section.appendChild(heading);
+
+            const select = document.createElement('select');
+            select.className = 'names-select';
+            select.size = Math.min(
+                Math.max(namesArray.length, 1),
+                4
+            );
+
+            if (namesArray.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'No registrations yet';
+                select.appendChild(option);
+            } else {
+                namesArray.forEach(entryStr => {
+                    const option = document.createElement('option');
+                    option.value = entryStr;
+                    option.textContent = entryStr;
+                    select.appendChild(option);
+                });
+            }
+
+            section.appendChild(select);
+            modalBody.appendChild(section);
+        });
+
+        document.getElementById('statsModal').style.display = 'flex';
+    }
+
+    // ==========================================
+    // CLOSE STATISTICS MODAL
+    // ==========================================
+
+    function closeModal() {
+        document.getElementById('statsModal').style.display = 'none';
+    }
+
+    function handleModalOutsideClick(event) {
+        if (event.target.id === 'statsModal') {
+            closeModal();
+        }
+    }
+
+    // Close popup with Escape key.
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Initial state: submission disabled until Py3110 is entered.
+    validateBatchCode();
+
+    // Load live registration statistics.
+    fetchRegistrationStats();
+</script>
+
+</body>
+</html>
