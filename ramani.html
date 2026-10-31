@@ -10,27 +10,26 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         @media print {
-            body { background: white !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            body { background: #0f172a !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
             .no-print { display: none !important; }
-            .print-shadow { box-shadow: none !important; border: 1px solid #e2e8f0; }
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-800 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+<body class="bg-slate-900 text-slate-100 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
 
     <!-- Top Action Bar for Print / Save -->
     <div class="max-w-4xl mx-auto mb-6 flex justify-between items-center no-print">
         <span class="text-slate-400 text-sm"><i class="fa-solid fa-circle-info mr-1.5 text-blue-400"></i> Interactive Profile View</span>
-        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow transition flex items-center gap-2">
+        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium shadow transition flex items-center gap-2">
             <i class="fa-solid fa-print"></i> Print / Save as PDF
         </button>
     </div>
 
     <!-- Main Profile Card -->
-    <main class="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden print-shadow">
+    <main class="max-w-4xl mx-auto bg-slate-800/90 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-md">
         
         <!-- Header Banner -->
-        <header class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-900 text-white p-6 sm:p-8 relative">
+        <header class="bg-gradient-to-r from-slate-900 via-slate-800 to-blue-950 text-white p-6 sm:p-8 relative border-b border-slate-700/60">
             <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
             
             <div class="flex flex-col sm:flex-row items-center gap-6 relative z-10">
@@ -38,14 +37,14 @@
                 <img src="ramani.jpeg" 
                      onerror="this.src='https://placehold.co/180x180/1e293b/ffffff?text=Ramani'"
                      alt="Ramani Ayyansamy" 
-                     class="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl object-cover border-4 border-white/20 shadow-xl bg-slate-800">
+                     class="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl object-cover border-4 border-blue-500/30 shadow-xl bg-slate-900">
 
                 <div class="text-center sm:text-left flex-1">
                     <div class="inline-block bg-blue-500/20 text-blue-300 text-xs font-semibold px-3 py-1 rounded-full mb-2 uppercase tracking-wider border border-blue-400/30">
                         Profile & Portfolio
                     </div>
                     <h1 class="text-2xl sm:text-4xl font-bold tracking-tight text-white">RAMANI AYYANSAMY</h1>
-                    <p class="text-blue-200 font-medium text-sm sm:text-base mt-1">Educator | Technology Professional | Author</p>
+                    <p class="text-blue-300 font-medium text-sm sm:text-base mt-1">Educator | Technology Professional | Author</p>
                     
                     <div class="mt-4 flex flex-wrap justify-center sm:justify-start gap-4 text-xs sm:text-sm text-slate-300">
                         <a href="mailto:ramani@pietraining.com" class="hover:text-white flex items-center gap-1.5 transition">
@@ -63,53 +62,53 @@
         <div class="p-6 sm:p-8 space-y-8">
 
             <!-- Summary Section -->
-            <section class="border-b border-slate-100 pb-6">
-                <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+            <section class="border-b border-slate-700/60 pb-6">
+                <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
                     Ramani Ayyansamy is a former professor and technologist with 30+ years of global IT experience. He works at the intersection of technology, education, and human thinking.
                 </p>
             </section>
 
             <!-- Initiatives & Portals Grid -->
             <section>
-                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-sitemap text-blue-600"></i> Initiatives & Ecosystem
+                <h2 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-sitemap text-blue-500"></i> Initiatives & Ecosystem
                 </h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Thinkers Hub -->
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-5 hover:border-blue-300 transition group">
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 hover:border-blue-500/50 transition group">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="font-bold text-slate-900 group-hover:text-blue-600 transition">Thinkers Hub</h3>
-                            <i class="fa-solid fa-brain text-blue-500"></i>
+                            <h3 class="font-bold text-white group-hover:text-blue-400 transition">Thinkers Hub</h3>
+                            <i class="fa-solid fa-brain text-blue-400"></i>
                         </div>
-                        <p class="text-xs text-slate-500 mb-3">Parent umbrella for cognitive development & structured thinking frameworks.</p>
-                        <a href="https://www.thinkingskill.in" target="_blank" class="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                        <p class="text-xs text-slate-400 mb-3">Parent umbrella for cognitive development & structured thinking frameworks.</p>
+                        <a href="https://www.thinkingskill.in" target="_blank" class="text-xs font-semibold text-blue-400 hover:underline flex items-center gap-1">
                             www.thinkingskill.in <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                         </a>
                     </div>
 
                     <!-- Think Lab -->
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-5 hover:border-blue-300 transition group">
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 hover:border-blue-500/50 transition group">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="font-bold text-slate-900 group-hover:text-blue-600 transition">Think Lab</h3>
-                            <i class="fa-solid fa-puzzle-piece text-amber-500"></i>
+                            <h3 class="font-bold text-white group-hover:text-blue-400 transition">Think Lab</h3>
+                            <i class="fa-solid fa-puzzle-piece text-amber-400"></i>
                         </div>
-                        <p class="text-xs text-slate-500 mb-2"><strong>Mission:</strong> Practice Thinking. Elevate Thinking.</p>
-                        <p class="text-xs text-slate-500 mb-3">Family-oriented space encouraging parents & children to think and grow together.</p>
-                        <a href="https://thinklab.thinkingskill.in" target="_blank" class="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                        <p class="text-xs text-slate-300 mb-2"><strong>Mission:</strong> Practice Thinking. Elevate Thinking.</p>
+                        <p class="text-xs text-slate-400 mb-3">Family-oriented space encouraging parents & children to think and grow together.</p>
+                        <a href="https://thinklab.thinkingskill.in" target="_blank" class="text-xs font-semibold text-blue-400 hover:underline flex items-center gap-1">
                             thinklab.thinkingskill.in <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                         </a>
                     </div>
 
                     <!-- PyLab -->
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-5 hover:border-blue-300 transition group">
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 hover:border-blue-500/50 transition group">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="font-bold text-slate-900 group-hover:text-blue-600 transition">PyLab</h3>
-                            <i class="fa-solid fa-code text-emerald-500"></i>
+                            <h3 class="font-bold text-white group-hover:text-blue-400 transition">PyLab</h3>
+                            <i class="fa-solid fa-code text-emerald-400"></i>
                         </div>
-                        <p class="text-xs text-slate-500 mb-2"><strong>Mission:</strong> I help students how to use AI for effective learning & development.</p>
-                        <p class="text-xs text-slate-500 mb-3">Practical programming, AI tools integration, and digital skills mastery.</p>
-                        <a href="https://pylab.thinkingskill.in" target="_blank" class="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                        <p class="text-xs text-slate-300 mb-2"><strong>Mission:</strong> Practicing Effective Learning & Development through AI.</p>
+                        <p class="text-xs text-slate-400 mb-3">Practical programming, AI tools integration, and digital skills mastery.</p>
+                        <a href="https://pylab.thinkingskill.in" target="_blank" class="text-xs font-semibold text-blue-400 hover:underline flex items-center gap-1">
                             pylab.thinkingskill.in <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                         </a>
                     </div>
@@ -120,33 +119,33 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 <!-- PIE Training Centre -->
-                <section class="bg-slate-50/50 border border-slate-100 rounded-xl p-5">
-                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-chalkboard-user text-blue-600"></i> PIE Training Centre
+                <section class="bg-slate-900/40 border border-slate-700/70 rounded-xl p-5">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-chalkboard-user text-blue-500"></i> PIE Training Centre
                     </h2>
-                    <p class="text-xs font-semibold text-slate-700 mb-1">Founder & Chief Trainer</p>
-                    <p class="text-xs text-slate-500 mb-3">Pro Bono Training & Tech Support. Practical technology training, mentoring, digital learning support, and hands-on upskilling.</p>
-                    <a href="https://www.pietraining.com" target="_blank" class="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                    <p class="text-xs font-semibold text-slate-200 mb-1">Founder & Chief Trainer</p>
+                    <p class="text-xs text-slate-400 mb-3">Pro Bono Training & Tech Support. Practical technology training, mentoring, digital learning support, and hands-on upskilling.</p>
+                    <a href="https://www.pietraining.com" target="_blank" class="text-xs font-semibold text-blue-400 hover:underline flex items-center gap-1">
                         www.pietraining.com <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                     </a>
                 </section>
 
                 <!-- Career & Education -->
-                <section class="bg-slate-50/50 border border-slate-100 rounded-xl p-5">
-                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-blue-600"></i> Career & Education
+                <section class="bg-slate-900/40 border border-slate-700/70 rounded-xl p-5">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-blue-500"></i> Career & Education
                     </h2>
-                    <ul class="space-y-2 text-xs text-slate-600">
+                    <ul class="space-y-2 text-xs text-slate-300">
                         <li class="flex items-start gap-2">
-                            <i class="fa-solid fa-briefcase text-slate-400 mt-0.5"></i>
+                            <i class="fa-solid fa-briefcase text-slate-500 mt-0.5"></i>
                             <span>14 years in Singapore IT industry (Senior IT Analyst / Project Management)</span>
                         </li>
                         <li class="flex items-start gap-2">
-                            <i class="fa-solid fa-graduation-cap text-slate-400 mt-0.5"></i>
+                            <i class="fa-solid fa-graduation-cap text-slate-500 mt-0.5"></i>
                             <span><strong>M.E. Structural Engineering:</strong> PSG College of Technology</span>
                         </li>
                         <li class="flex items-start gap-2">
-                            <i class="fa-solid fa-graduation-cap text-slate-400 mt-0.5"></i>
+                            <i class="fa-solid fa-graduation-cap text-slate-500 mt-0.5"></i>
                             <span><strong>B.E. Civil Engineering:</strong> Annamalai University</span>
                         </li>
                     </ul>
@@ -155,20 +154,20 @@
 
             <!-- Author & Technology -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <section class="bg-slate-50/50 border border-slate-100 rounded-xl p-5">
-                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-book text-blue-600"></i> Author & Thinking
+                <section class="bg-slate-900/40 border border-slate-700/70 rounded-xl p-5">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-book text-blue-500"></i> Author & Thinking
                     </h2>
-                    <p class="text-xs text-slate-600 leading-relaxed">
+                    <p class="text-xs text-slate-300 leading-relaxed">
                         Author of the book <strong>Elevating Stories & Puzzles</strong> which combines values, stories, puzzles, and thinking activities for children and families. His Think Lab work brings this approach into an ongoing family learning environment.
                     </p>
                 </section>
 
-                <section class="bg-slate-50/50 border border-slate-100 rounded-xl p-5">
-                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-laptop-code text-blue-600"></i> Technology & Learning
+                <section class="bg-slate-900/40 border border-slate-700/70 rounded-xl p-5">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-laptop-code text-blue-500"></i> Technology & Learning
                     </h2>
-                    <ul class="space-y-1.5 text-xs text-slate-600">
+                    <ul class="space-y-1.5 text-xs text-slate-300">
                         <li>• Google Workspace for Education & digital learning support</li>
                         <li>• Python learning through Python Learners Lounge</li>
                         <li>• Data visualization, digital platforms, & AI-enabled learning</li>
@@ -177,22 +176,22 @@
             </div>
 
             <!-- Recognitions -->
-            <section class="border-t border-slate-100 pt-6">
-                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-award text-blue-600"></i> Recognitions & Awards
+            <section class="border-t border-slate-700/60 pt-6">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-award text-blue-500"></i> Recognitions & Awards
                 </h2>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                    <div class="bg-blue-50/50 border border-blue-100 rounded-lg p-3">
-                        <p class="font-bold text-slate-900">Vijaya Ratna Award</p>
-                        <p class="text-slate-500 mt-0.5">Excellence & Community Impact</p>
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-lg p-3">
+                        <p class="font-bold text-white">Vijaya Ratna Award</p>
+                        <p class="text-slate-400 mt-0.5">Excellence & Community Impact</p>
                     </div>
-                    <div class="bg-blue-50/50 border border-blue-100 rounded-lg p-3">
-                        <p class="font-bold text-slate-900">Best Teacher Award</p>
-                        <p class="text-slate-500 mt-0.5">Vellore Engineering College — Voluntary service to students</p>
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-lg p-3">
+                        <p class="font-bold text-white">Best Teacher Award</p>
+                        <p class="text-slate-400 mt-0.5">Vellore Engineering College — Voluntary service to students</p>
                     </div>
-                    <div class="bg-blue-50/50 border border-blue-100 rounded-lg p-3">
-                        <p class="font-bold text-slate-900">SingTel Spot Awards</p>
-                        <p class="text-slate-500 mt-0.5">Technical excellence & successful implementations</p>
+                    <div class="bg-slate-900/60 border border-slate-700 rounded-lg p-3">
+                        <p class="font-bold text-white">SingTel Spot Awards</p>
+                        <p class="text-slate-400 mt-0.5">Technical excellence & successful implementations</p>
                     </div>
                 </div>
             </section>
@@ -200,7 +199,7 @@
         </div>
 
         <!-- Footer Note -->
-        <footer class="bg-slate-50 border-t border-slate-100 p-4 text-center text-xs text-slate-500">
+        <footer class="bg-slate-900/80 border-t border-slate-700/60 p-4 text-center text-xs text-slate-400">
             Through his signature "Thinking Workshop" and diverse training initiatives, Ramani transforms the lives of youth and entrepreneurs by seamlessly combining advanced software tools with critical soft skills.
         </footer>
 
