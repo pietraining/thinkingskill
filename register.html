@@ -50,6 +50,7 @@
       overflow: hidden;
     }
 
+    /* TOP BAR */
     .top-bar {
       height: 56px;
       padding: 0 16px;
@@ -93,37 +94,28 @@
 
     .icon-btn:hover { background: #ffffff; border-color: #cbd5e1; }
 
+    /* CONTENT SCROLL */
     .content-scroll {
       flex: 1;
       background: var(--bg-silver);
       overflow-y: auto;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
-      padding: 12px 12px 110px 12px;
+      padding: 0 0 110px 0; /* Padding removed from sides to allow edge-to-edge top image */
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
 
     .content-scroll::-webkit-scrollbar { display: none; }
 
-    /* Full Width Hero Card */
-    .hero-card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 0;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 12px;
-      overflow: hidden;
-      display: none; 
-    }
-
-    .hero-image-container {
+    /* Full Width Edge-to-Edge Banner */
+    .hero-banner-wrapper {
       width: 100%;
       height: 220px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      display: none; 
     }
 
     .hero-image {
@@ -131,6 +123,10 @@
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+
+    .main-content-wrapper {
+      padding: 12px;
     }
 
     .main-content-card {
@@ -236,7 +232,7 @@
     .section-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--brand-navy); }
     .overview-text { color: #475569; font-size: 14px; line-height: 1.6; }
 
-    /* Learners List Section */
+    /* Registered Learners Section */
     .learners-section { display: none; }
     .learners-list {
       list-style: none;
@@ -261,6 +257,7 @@
     }
     .learner-item i { color: var(--steel-blue); flex-shrink: 0; }
 
+    /* BOTTOM BAR */
     .bottom-bar {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -418,78 +415,78 @@
     <!-- Scrollable Content -->
     <div class="content-scroll">
       
-      <!-- Full-Width Hero Image Card -->
-      <div class="hero-card" id="heroCard">
-        <div class="hero-image-container">
-          <img 
-            id="heroBanner"
-            alt="Course Banner" 
-            class="hero-image"
-            onerror="document.getElementById('heroCard').style.display='none';"
-          />
-        </div>
+      <!-- Full Edge-to-Edge Hero Banner -->
+      <div class="hero-banner-wrapper" id="heroCard">
+        <img 
+          id="heroBanner"
+          alt="Course Banner" 
+          class="hero-image"
+          onerror="document.getElementById('heroCard').style.display='none';"
+        />
       </div>
 
-      <main class="main-content-card">
-        <h1 class="event-title" id="courseTitle">Loading Course...</h1>
+      <div class="main-content-wrapper">
+        <main class="main-content-card">
+          <h1 class="event-title" id="courseTitle">Loading Course...</h1>
 
-        <div class="meta-list">
-          <div class="meta-item" id="locationItem" style="display: none;">
-            <i data-lucide="map-pin" size="18"></i>
-            <span id="eventLink">Online Event (Free)</span>
-          </div>
-          <div class="meta-item" id="dateTimeItem" style="display: none;">
-            <i data-lucide="calendar" size="18"></i>
-            <span id="eventDateTime"></span>
-          </div>
+          <div class="meta-list">
+            <div class="meta-item" id="locationItem" style="display: none;">
+              <i data-lucide="map-pin" size="18"></i>
+              <span id="eventLink">Online Event (Free)</span>
+            </div>
+            <div class="meta-item" id="dateTimeItem" style="display: none;">
+              <i data-lucide="calendar" size="18"></i>
+              <span id="eventDateTime"></span>
+            </div>
 
-          <!-- Facilitator & Contact WhatsApp Row -->
-          <div class="meta-item" id="facilitatorItem" style="display: none;">
-            <i data-lucide="user" size="18"></i>
-            <div style="display: flex; align-items: center; flex-wrap: wrap;">
-              <span id="facilitatorName"></span>
-              <a href="#" id="facilitatorWALink" target="_blank" class="wa-btn">
-                💬 WhatsApp
-              </a>
+            <!-- Facilitator & Contact WhatsApp Row -->
+            <div class="meta-item" id="facilitatorItem" style="display: none;">
+              <i data-lucide="user" size="18"></i>
+              <div style="display: flex; align-items: center; flex-wrap: wrap;">
+                <span id="facilitatorName"></span>
+                <a href="#" id="facilitatorWALink" target="_blank" class="wa-btn">
+                  💬 WhatsApp
+                </a>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Organizer Card -->
-        <div class="organizer-card">
-          <div class="organizer-info">
-            <img 
-              id="organizerLogo"
-              src="https://lh3.googleusercontent.com/d/1IBGBjphVdRvG1VkRRVxAXC4WrBj6egAg" 
-              alt="Thinkers Hub Logo" 
-              class="organizer-logo"
-            />
-            <div class="organizer-details">
-              <span class="organizer-by">by <span class="organizer-name">Thinkers Hub</span></span>
-              <span class="organizer-subtext" id="learnersCount">0 learners joined</span>
+          <!-- Organizer Card -->
+          <div class="organizer-card">
+            <div class="organizer-info">
+              <img 
+                id="organizerLogo"
+                src="https://lh3.googleusercontent.com/d/1IBGBjphVdRvG1VkRRVxAXC4WrBj6egAg" 
+                alt="Thinkers Hub Logo" 
+                class="organizer-logo"
+              />
+              <div class="organizer-details">
+                <span class="organizer-by">by <span class="organizer-name">Thinkers Hub</span></span>
+                <span class="organizer-subtext" id="learnersCount">0 learners joined</span>
+              </div>
             </div>
+            <a href="https://www.thinkingskill.in" target="_blank" class="visit-btn">Visit</a>
           </div>
-          <a href="https://www.thinkingskill.in" target="_blank" class="visit-btn">Visit</a>
-        </div>
 
-        <!-- Overview Section -->
-        <div class="overview-section" id="overviewSection">
-          <div class="divider"></div>
-          <section>
-            <h2 class="section-title">Overview</h2>
-            <p class="overview-text" id="courseOverview"></p>
-          </section>
-        </div>
+          <!-- Overview Section -->
+          <div class="overview-section" id="overviewSection">
+            <div class="divider"></div>
+            <section>
+              <h2 class="section-title">Overview</h2>
+              <p class="overview-text" id="courseOverview"></p>
+            </section>
+          </div>
 
-        <!-- Registered Learners Section -->
-        <div class="learners-section" id="learnersSection">
-          <div class="divider"></div>
-          <section>
-            <h2 class="section-title">Registered Learners</h2>
-            <ul class="learners-list" id="learnersContainer"></ul>
-          </section>
-        </div>
-      </main>
+          <!-- Registered Learners Section -->
+          <div class="learners-section" id="learnersSection">
+            <div class="divider"></div>
+            <section>
+              <h2 class="section-title">Registered Learners</h2>
+              <ul class="learners-list" id="learnersContainer"></ul>
+            </section>
+          </div>
+        </main>
+      </div>
     </div>
 
     <!-- Bottom Reservation Bar -->
