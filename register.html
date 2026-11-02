@@ -623,9 +623,11 @@
         }
 
         const rows = parseCSV(csvText);
-        const row = rows.find((r, index) => {
-          const firstCell = (r[0] || "").replace(/^\uFEFF/, "").trim().toLowerCase();
-          return index > 0 && firstCell && firstCell !== "batch code" && r[1]?.trim();
+
+        // Find the first valid course data row (ignoring headers)
+        const row = rows.find(r => {
+          const batchCol = (r[0] || "").replace(/^\uFEFF/, "").trim();
+          return batchCol && batchCol.toLowerCase() !== "batch code" && r[1]?.trim();
         });
 
         if (!row) {
@@ -633,10 +635,13 @@
           throw new Error("No course data row found. Check the CSV columns and published tab.");
         }
 
-        VALID_BATCH_CODE = row[0].trim();
+        // Col 0: Batch Code
+        VALID_BATCH_CODE = row[0].replace(/^\uFEFF/, "").trim();
 
+        // Col 1: Course Title
         if (row[1]) document.getElementById("courseTitle").textContent = row[1].trim();
 
+        // Col 2 & 3: Date & Time
         const dateStr = row[2]?.trim() || "";
         const timeStr = row[3]?.trim() || "";
         if (dateStr || timeStr) {
@@ -645,6 +650,7 @@
           document.getElementById("dateTimeItem").style.display = "flex";
         }
 
+        // Col 4: Location / Meet Link
         const rawLink = row[4]?.trim() || "";
         const cleanLink = extractUrl(rawLink);
         if (cleanLink && cleanLink !== "-") {
@@ -653,6 +659,7 @@
           document.getElementById("locationItem").style.display = "flex";
         }
 
+        // Col 5 & 6: Facilitator Name & WhatsApp
         const facilitator = row[5]?.trim() || "";
         const waNumber = (row[6] || "").replace(/[^0-9]/g, "");
         if (facilitator && facilitator !== "-") {
@@ -671,12 +678,14 @@
           document.getElementById("facilitatorItem").style.display = "flex";
         }
 
+        // Col 7: Overview
         const overviewText = row[7]?.trim() || "";
         if (overviewText && overviewText !== "-") {
           document.getElementById("courseOverview").textContent = overviewText;
           document.getElementById("overviewSection").style.display = "block";
         }
 
+        // Col 8: Course Image ID
         const imageId = row[8]?.trim() || "";
         if (imageId && imageId !== "-" && imageId.toLowerCase() !== "undefined") {
           heroBanner.src = `https://lh3.googleusercontent.com/d/${imageId}`;
@@ -685,6 +694,7 @@
           heroCard.style.display = "none";
         }
 
+        // Col 9: Logo Image ID
         const logoId = row[9]?.trim() || "";
         if (logoId && logoId !== "-") {
           document.getElementById("organizerLogo").src =
