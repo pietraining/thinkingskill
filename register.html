@@ -12,16 +12,12 @@
 
   <style>
     :root {
-      /* ThinkersHub Brand Palette */
-      --brand-blue: #0082c8;
-      --brand-blue-hover: #006eb0;
-      --brand-navy: #103874;
-      --brand-navy-dark: #0b2550;
-      --brand-light-blue: #e0f2fe;
-      
-      /* New Panel & Button Colors */
-      --steel-blue: #4682b4;
-      --steel-blue-dark: #36648b;
+      /* Palette Adjustments */
+      --silver-bg: #e2e8f0;
+      --silver-border: #cbd5e1;
+      --sky-blue: #0284c7;
+      --sky-blue-hover: #0369a1;
+      --brand-navy: #0f172a;
       
       --bg: #ffffff;
       --surface: #f8fafc;
@@ -55,19 +51,19 @@
       overflow: hidden;
     }
 
-    /* TOP BAR: Clean White Header */
+    /* TOP BAR: Metallic Silver */
     .top-bar {
       height: 56px;
       padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #ffffff;
-      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+      border-bottom: 1px solid var(--silver-border);
       color: var(--brand-navy);
       z-index: 10;
       flex-shrink: 0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     .back-btn {
@@ -81,13 +77,13 @@
       transition: opacity 0.2s;
     }
 
-    .back-btn:hover { opacity: 0.8; color: var(--brand-blue); }
+    .back-btn:hover { opacity: 0.8; }
 
     .action-icons { display: flex; align-items: center; gap: 12px; }
 
     .icon-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--silver-border);
       border-radius: 20px;
       padding: 6px 12px;
       cursor: pointer;
@@ -98,11 +94,12 @@
       transition: all 0.2s;
     }
 
-    .icon-btn:hover { background: var(--brand-light-blue); color: var(--brand-blue); border-color: #bae6fd; }
+    .icon-btn:hover { background: #ffffff; }
 
-    /* CONTENT SCROLL: Hidden Scrollbars */
+    /* CONTENT SCROLL: White Middle Body */
     .content-scroll {
       flex: 1;
+      background: #ffffff;
       overflow-y: auto;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
@@ -134,7 +131,7 @@
       border-radius: 8px;
     }
 
-    .main-content { padding: 24px 20px; }
+    .main-content { padding: 24px 20px; background: #ffffff; }
 
     .event-title {
       font-size: 24px;
@@ -161,7 +158,7 @@
       font-weight: 500;
     }
 
-    .meta-item i { color: var(--brand-blue); margin-top: 2px; flex-shrink: 0; }
+    .meta-item i { color: var(--sky-blue); margin-top: 2px; flex-shrink: 0; }
 
     /* Organizer Card */
     .organizer-card {
@@ -199,34 +196,34 @@
       align-items: center;
       justify-content: center;
       padding: 8px 18px;
-      border: 1.5px solid var(--brand-blue);
+      border: 1.5px solid var(--sky-blue);
       border-radius: 8px;
       background-color: #ffffff;
-      color: var(--brand-blue);
+      color: var(--sky-blue);
       font-weight: 700;
       font-size: 13px;
       text-decoration: none;
       transition: all 0.2s;
     }
 
-    .visit-btn:hover { background-color: var(--brand-blue); color: #ffffff; }
+    .visit-btn:hover { background-color: var(--sky-blue); color: #ffffff; }
 
     .divider { height: 1px; background-color: var(--border); margin: 24px 0; }
     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--brand-navy); }
     .overview-text { color: #475569; font-size: 15px; line-height: 1.6; }
 
-    /* BOTTOM BAR: Steel Blue Background with Navy Blue Button */
+    /* BOTTOM BAR: Metallic Silver matching Top Bar */
     .bottom-bar {
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 84px;
-      background: linear-gradient(135deg, var(--steel-blue) 0%, var(--steel-blue-dark) 100%);
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+      border-top: 1px solid var(--silver-border);
       padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 -6px 20px rgba(70, 130, 180, 0.3);
+      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
       z-index: 30;
       padding-bottom: max(12px, env(safe-area-inset-bottom));
     }
@@ -236,8 +233,8 @@
     .batch-input {
       width: 100%;
       padding: 10px 12px;
-      border: 1.5px solid #ffffff;
-      background-color: rgba(255, 255, 255, 0.9);
+      border: 1.5px solid var(--silver-border);
+      background-color: #ffffff;
       color: var(--brand-navy);
       border-radius: 8px;
       font-size: 13px;
@@ -249,13 +246,13 @@
     }
 
     .batch-input::placeholder { color: #64748b; font-weight: 500; }
-    .batch-input:focus { border-color: var(--brand-navy); background-color: #ffffff; }
+    .batch-input:focus { border-color: var(--sky-blue); }
     .batch-input.is-invalid { border-color: #ef4444; }
     .batch-input.is-valid { border-color: #22c55e; }
 
-    /* BUTTON: Navy Blue Palette */
+    /* BUTTON: Sky Blue */
     .btn-reserve {
-      background-color: var(--brand-navy);
+      background-color: var(--sky-blue);
       color: #ffffff;
       border: none;
       padding: 12px 18px;
@@ -265,18 +262,18 @@
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(16, 56, 116, 0.35);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
     }
 
     .btn-reserve:hover:not(:disabled) {
-      background-color: var(--brand-navy-dark);
+      background-color: var(--sky-blue-hover);
       transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(16, 56, 116, 0.45);
+      box-shadow: 0 6px 15px rgba(2, 132, 199, 0.4);
     }
 
     .btn-reserve:disabled {
-      background: #64748b;
-      color: #cbd5e1;
+      background: #94a3b8;
+      color: #f1f5f9;
       cursor: not-allowed;
       box-shadow: none;
       transform: none;
@@ -315,11 +312,11 @@
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
     .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; }
-    .form-input:focus { border-color: var(--brand-blue); }
+    .form-input:focus { border-color: var(--sky-blue); }
     
     .submit-btn { 
       width: 100%; 
-      background-color: var(--brand-navy); 
+      background-color: var(--sky-blue); 
       color: white; 
       border: none; 
       padding: 12px; 
@@ -329,7 +326,7 @@
       margin-top: 10px; 
       transition: background-color 0.2s;
     }
-    .submit-btn:hover { background-color: var(--brand-navy-dark); }
+    .submit-btn:hover { background-color: var(--sky-blue-hover); }
 
     .toast {
       position: absolute;
@@ -350,7 +347,10 @@
   <div class="app-container">
     <div class="toast" id="toast">Link copied to clipboard!</div>
 
-    <!-- Top Bar (White) -->
+    <!-- Target Iframe for Google Form insertion -->
+    <iframe name="form_target_iframe" id="form_target_iframe" style="display:none;"></iframe>
+
+    <!-- Top Bar (Silver) -->
     <header class="top-bar">
       <a href="https://www.thinkingskill.in" class="back-btn">
         <i data-lucide="arrow-left" size="18"></i>
@@ -364,7 +364,7 @@
       </div>
     </header>
 
-    <!-- Scrollable Content -->
+    <!-- Scrollable Content (White Body) -->
     <div class="content-scroll">
       <div class="hero-image-container">
         <img 
@@ -417,7 +417,7 @@
       </main>
     </div>
 
-    <!-- Bottom Reservation Bar (Steel Blue with Navy Button) -->
+    <!-- Bottom Reservation Bar (Silver) -->
     <footer class="bottom-bar">
       <div class="batch-input-wrapper">
         <input 
@@ -442,12 +442,19 @@
           </button>
         </div>
 
-        <form id="bookingForm">
+        <!-- Standard HTML Form POST to Google Form Action Endpoint -->
+        <form 
+          id="bookingForm"
+          action="https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse"
+          method="POST"
+          target="form_target_iframe">
+
           <div class="form-group">
             <label class="form-label" for="nameInput">Full Name</label>
             <input 
               type="text" 
               id="nameInput" 
+              name="entry.1284435015" 
               class="form-input" 
               placeholder="John Doe" 
               required 
@@ -459,11 +466,20 @@
             <input 
               type="email" 
               id="emailInput" 
+              name="entry.1988767158" 
               class="form-input" 
               placeholder="john@example.com" 
               required 
             />
           </div>
+
+          <!-- Hidden Input for Batch Code -->
+          <input 
+            type="hidden" 
+            id="batchCodeFormInput" 
+            name="entry.2046668482" 
+            value="" 
+          />
 
           <button type="submit" class="submit-btn" id="submitBtn">Confirm Registration</button>
         </form>
@@ -482,19 +498,16 @@
     const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
     const batchCodeInput = document.getElementById('batchCodeInput');
+    const batchCodeFormInput = document.getElementById('batchCodeFormInput');
     const submitBtn = document.getElementById('submitBtn');
+    const iframeTarget = document.getElementById('form_target_iframe');
 
     let VALID_BATCH_CODE = "TL211126";
+    let isSubmitting = false;
 
     // Published Public CSV Endpoints
     const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1114785347&single=true&output=csv";
     const PUBLIC_FEED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1149121719&single=true&output=csv";
-
-    // Google Form FormResponse Endpoint & Entry IDs
-    const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse";
-    const NAME_ENTRY_ID = "entry.1284435015";       
-    const EMAIL_ENTRY_ID = "entry.1988767158";      
-    const BATCH_CODE_ENTRY_ID = "entry.2046668482"; 
 
     function parseCSV(text) {
       return text.split('\n')
@@ -575,9 +588,10 @@
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    // Modal Controls
+    // Open Modal
     openModalBtn.addEventListener('click', () => {
       if (!openModalBtn.disabled) {
+        batchCodeFormInput.value = batchCodeInput.value.trim().toUpperCase();
         modalOverlay.classList.add('open');
       }
     });
@@ -588,44 +602,25 @@
       if (e.target === modalOverlay) modalOverlay.classList.remove('open');
     });
 
-    // Form submission using robust asynchronous fetch POST payload
-    bookingForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const nameValue = document.getElementById('nameInput').value.trim();
-      const emailValue = document.getElementById('emailInput').value.trim();
-      const batchCodeValue = batchCodeInput.value.trim().toUpperCase();
-
-      submitBtn.textContent = 'Submitting...';
+    // Form Submit Event Handler
+    bookingForm.addEventListener('submit', () => {
+      isSubmitting = true;
       submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+    });
 
-      // Construct Google Form URL encoded body
-      const formPayload = new URLSearchParams();
-      formPayload.append(NAME_ENTRY_ID, nameValue);
-      formPayload.append(EMAIL_ENTRY_ID, emailValue);
-      formPayload.append(BATCH_CODE_ENTRY_ID, batchCodeValue);
-
-      try {
-        await fetch(GOOGLE_FORM_ACTION_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: formPayload.toString()
-        });
-
+    // Listen to iframe load event to verify submission completion
+    iframeTarget.addEventListener('load', () => {
+      if (isSubmitting) {
         alert('Registration successful! Check your email for event access instructions.');
         modalOverlay.classList.remove('open');
         bookingForm.reset();
-        setTimeout(loadPublicFeed, 2500);
 
-      } catch (error) {
-        console.error('Submission error:', error);
-        alert('Registration failed. Please try again.');
-      } finally {
-        submitBtn.textContent = 'Confirm Registration';
         submitBtn.disabled = false;
+        submitBtn.textContent = 'Confirm Registration';
+        isSubmitting = false;
+
+        setTimeout(loadPublicFeed, 2500);
       }
     });
 
