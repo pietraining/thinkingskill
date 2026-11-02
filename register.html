@@ -51,7 +51,7 @@
       overflow: hidden;
     }
 
-    /* TOP BAR: Clean White Header matching ThinkersHub */
+    /* TOP BAR: Clean White Header */
     .top-bar {
       height: 56px;
       padding: 0 16px;
@@ -104,13 +104,11 @@
       -webkit-overflow-scrolling: touch;
       padding-bottom: 110px;
       
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
 
-    .content-scroll::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Opera */
-    }
+    .content-scroll::-webkit-scrollbar { display: none; }
 
     .hero-image-container {
       width: 100%;
@@ -213,18 +211,18 @@
     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--brand-navy); }
     .overview-text { color: #475569; font-size: 15px; line-height: 1.6; }
 
-    /* BOTTOM BAR: Clean White matching Top Bar */
+    /* BOTTOM BAR: Deep Navy Blue Palette */
     .bottom-bar {
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 84px;
-      background: #ffffff;
-      border-top: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--brand-navy-dark) 0%, var(--brand-navy) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 -6px 20px rgba(16, 56, 116, 0.25);
       z-index: 30;
       padding-bottom: max(12px, env(safe-area-inset-bottom));
     }
@@ -234,9 +232,9 @@
     .batch-input {
       width: 100%;
       padding: 10px 12px;
-      border: 1.5px solid var(--border);
-      background-color: var(--surface);
-      color: var(--text-main);
+      border: 1.5px solid #1e498a;
+      background-color: #081b3c;
+      color: #ffffff;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 600;
@@ -246,8 +244,8 @@
       transition: all 0.2s;
     }
 
-    .batch-input::placeholder { color: var(--text-muted); }
-    .batch-input:focus { border-color: var(--brand-blue); background-color: #ffffff; }
+    .batch-input::placeholder { color: #64748b; }
+    .batch-input:focus { border-color: var(--brand-blue); background-color: #030d22; }
     .batch-input.is-invalid { border-color: #ef4444; }
     .batch-input.is-valid { border-color: #22c55e; }
 
@@ -262,18 +260,18 @@
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(0, 130, 200, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 130, 200, 0.35);
     }
 
     .btn-reserve:hover:not(:disabled) {
       background-color: var(--brand-blue-hover);
       transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(0, 130, 200, 0.3);
+      box-shadow: 0 6px 15px rgba(0, 130, 200, 0.45);
     }
 
     .btn-reserve:disabled {
-      background: #cbd5e1;
-      color: #94a3b8;
+      background: #1e3a67;
+      color: #64748b;
       cursor: not-allowed;
       box-shadow: none;
       transform: none;
@@ -335,7 +333,16 @@
   <div class="app-container">
     <div class="toast" id="toast">Link copied to clipboard!</div>
 
-    <!-- Top Bar -->
+    <!-- Hidden iframe for direct Google Form submission -->
+    <iframe
+      name="hidden_iframe"
+      id="hidden_iframe"
+      style="display:none;"
+      title="Registration submission"
+      onload="if(submitted) { handleSubmissionSuccess(); }">
+    </iframe>
+
+    <!-- Top Bar (White) -->
     <header class="top-bar">
       <a href="https://www.thinkingskill.in" class="back-btn">
         <i data-lucide="arrow-left" size="18"></i>
@@ -402,7 +409,7 @@
       </main>
     </div>
 
-    <!-- Bottom Reservation Bar -->
+    <!-- Bottom Reservation Bar (Navy Blue) -->
     <footer class="bottom-bar">
       <div class="batch-input-wrapper">
         <input 
@@ -427,15 +434,45 @@
           </button>
         </div>
 
-        <form id="bookingForm">
+        <!-- Standard Google Form POST targeting hidden_iframe -->
+        <form 
+          id="bookingForm"
+          action="https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse"
+          method="POST"
+          target="hidden_iframe"
+          onsubmit="return handleRegistrationSubmit();">
+
           <div class="form-group">
-            <label class="form-label" for="name">Full Name</label>
-            <input type="text" id="name" class="form-input" placeholder="John Doe" required />
+            <label class="form-label" for="nameInput">Full Name</label>
+            <input 
+              type="text" 
+              id="nameInput" 
+              name="entry.1284435015" 
+              class="form-input" 
+              placeholder="John Doe" 
+              required 
+            />
           </div>
+
           <div class="form-group">
-            <label class="form-label" for="email">Email Address</label>
-            <input type="email" id="email" class="form-input" placeholder="john@example.com" required />
+            <label class="form-label" for="emailInput">Email Address</label>
+            <input 
+              type="email" 
+              id="emailInput" 
+              name="entry.1988767158" 
+              class="form-input" 
+              placeholder="john@example.com" 
+              required 
+            />
           </div>
+
+          <!-- Hidden input that carries the validated Batch Code to Google Form -->
+          <input 
+            type="hidden" 
+            id="batchCodeFormInput" 
+            name="entry.2046668482" 
+            value="" 
+          />
 
           <button type="submit" class="submit-btn" id="submitBtn">Confirm Registration</button>
         </form>
@@ -446,6 +483,8 @@
   <script>
     lucide.createIcons();
 
+    let submitted = false;
+
     // DOM Elements
     const modalOverlay = document.getElementById('modalOverlay');
     const openModalBtn = document.getElementById('openModalBtn');
@@ -454,6 +493,7 @@
     const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
     const batchCodeInput = document.getElementById('batchCodeInput');
+    const batchCodeFormInput = document.getElementById('batchCodeFormInput');
     const submitBtn = document.getElementById('submitBtn');
 
     let VALID_BATCH_CODE = "TL211126";
@@ -461,12 +501,6 @@
     // Published Public CSV Endpoints
     const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1114785347&single=true&output=csv";
     const PUBLIC_FEED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1149121719&single=true&output=csv";
-
-    // Google Form Entry IDs & Action Endpoint
-    const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse";
-    const NAME_ENTRY_ID = "entry.1284435015";       
-    const EMAIL_ENTRY_ID = "entry.1988767158";      
-    const BATCH_CODE_ENTRY_ID = "entry.2046668482"; 
 
     function parseCSV(text) {
       return text.split('\n')
@@ -549,7 +583,11 @@
 
     // Modal Controls
     openModalBtn.addEventListener('click', () => {
-      if (!openModalBtn.disabled) modalOverlay.classList.add('open');
+      if (!openModalBtn.disabled) {
+        // Copy the validated batch code into the form's hidden input
+        batchCodeFormInput.value = batchCodeInput.value.trim().toUpperCase();
+        modalOverlay.classList.add('open');
+      }
     });
     
     closeModalBtn.addEventListener('click', () => modalOverlay.classList.remove('open'));
@@ -558,46 +596,28 @@
       if (e.target === modalOverlay) modalOverlay.classList.remove('open');
     });
 
-    // Form Submission using direct URLSearchParams & no-cors Fetch
-    bookingForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const nameValue = document.getElementById('name').value.trim();
-      const emailValue = document.getElementById('email').value.trim();
-      const batchCodeValue = batchCodeInput.value.trim().toUpperCase();
-
-      submitBtn.textContent = 'Submitting...';
+    // Native form submit handler
+    function handleRegistrationSubmit() {
+      submitted = true;
       submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      return true;
+    }
 
-      // Construct URL encoded body directly mapping Google Form IDs
-      const bodyParams = new URLSearchParams();
-      bodyParams.append(NAME_ENTRY_ID, nameValue);
-      bodyParams.append(EMAIL_ENTRY_ID, emailValue);
-      bodyParams.append(BATCH_CODE_ENTRY_ID, batchCodeValue);
+    // Executed when hidden_iframe finishes loading Google's response page
+    function handleSubmissionSuccess() {
+      if (!submitted) return;
+      
+      alert('Registration successful! Check your email for event access instructions.');
+      modalOverlay.classList.remove('open');
+      bookingForm.reset();
+      
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirm Registration';
+      submitted = false;
 
-      try {
-        await fetch(GOOGLE_FORM_ACTION_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: bodyParams.toString()
-        });
-
-        alert('Registration successful! Check your email for event access instructions.');
-        modalOverlay.classList.remove('open');
-        bookingForm.reset();
-        setTimeout(loadPublicFeed, 2500);
-
-      } catch (error) {
-        console.error('Submission error:', error);
-        alert('Registration failed. Please try again.');
-      } finally {
-        submitBtn.textContent = 'Confirm Registration';
-        submitBtn.disabled = false;
-      }
-    });
+      setTimeout(loadPublicFeed, 2500);
+    }
 
     // Share Button Listener
     shareBtn.addEventListener('click', async () => {
