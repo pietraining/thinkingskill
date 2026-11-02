@@ -113,7 +113,7 @@
 
     .content-scroll::-webkit-scrollbar { display: none; }
 
-    /* Hidden by default to prevent broken image icon flash */
+    /* Hidden by default to prevent broken image flash */
     .hero-card {
       background: #ffffff;
       border-radius: 12px;
@@ -176,6 +176,23 @@
 
     .meta-item i { color: var(--steel-blue); margin-top: 2px; flex-shrink: 0; }
 
+    /* Facilitator WhatsApp Button */
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      background-color: #25d366;
+      color: #ffffff;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      margin-left: 8px;
+      transition: opacity 0.2s;
+    }
+    .wa-btn:hover { opacity: 0.9; }
+
     /* Organizer Card */
     .organizer-card {
       display: flex;
@@ -225,6 +242,7 @@
     .visit-btn:hover { background-color: var(--steel-blue); color: #ffffff; }
 
     .divider { height: 1px; background-color: var(--border); margin: 20px 0; }
+    .overview-section { display: none; } /* Shown conditionally */
     .section-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--brand-navy); }
     .overview-text { color: #475569; font-size: 14px; line-height: 1.6; }
 
@@ -388,7 +406,7 @@
     <!-- Scrollable Content -->
     <div class="content-scroll">
       
-      <!-- Hero Image Card (Hidden initially, shown only if valid ID loads) -->
+      <!-- Hero Image Card -->
       <div class="hero-card" id="heroCard">
         <div class="hero-image-container">
           <img 
@@ -404,13 +422,24 @@
         <h1 class="event-title" id="courseTitle">Google Flow for Beginners</h1>
 
         <div class="meta-list">
-          <div class="meta-item">
+          <div class="meta-item" id="locationItem" style="display: none;">
             <i data-lucide="map-pin" size="18"></i>
             <span id="eventLink">Online Event (Free)</span>
           </div>
-          <div class="meta-item">
+          <div class="meta-item" id="dateTimeItem" style="display: none;">
             <i data-lucide="calendar" size="18"></i>
             <span id="eventDateTime">Sat, Nov 21st • 10-11am IST</span>
+          </div>
+
+          <!-- Facilitator & Contact WhatsApp Row -->
+          <div class="meta-item" id="facilitatorItem" style="display: none;">
+            <i data-lucide="user" size="18"></i>
+            <div>
+              <span id="facilitatorName">Facilitator Name</span>
+              <a href="#" id="facilitatorWALink" target="_blank" class="wa-btn">
+                💬 WhatsApp
+              </a>
+            </div>
           </div>
         </div>
 
@@ -431,14 +460,14 @@
           <a href="https://www.thinkingskill.in" target="_blank" class="visit-btn">Visit</a>
         </div>
 
-        <div class="divider"></div>
-
-        <section>
-          <h2 class="section-title">Overview</h2>
-          <p class="overview-text" id="courseOverview">
-            Creating Images and Short Videos Using Google Flow: Ensuring Character and Voice Consistency
-          </p>
-        </section>
+        <!-- Overview Section -->
+        <div class="overview-section" id="overviewSection">
+          <div class="divider"></div>
+          <section>
+            <h2 class="section-title">Overview</h2>
+            <p class="overview-text" id="courseOverview"></p>
+          </section>
+        </div>
       </main>
     </div>
 
@@ -467,7 +496,6 @@
           </button>
         </div>
 
-        <!-- HTML Form submitting natively to Google Form -->
         <form 
           id="bookingForm"
           action="https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse"
@@ -499,7 +527,6 @@
             />
           </div>
 
-          <!-- Hidden Input carrying the validated Batch Code -->
           <input 
             type="hidden" 
             id="batchCodeFormInput" 
@@ -516,7 +543,6 @@
   <script>
     lucide.createIcons();
 
-    // Global variable tracking form submission status for iframe load
     var submitted = false;
 
     // DOM Elements
@@ -534,7 +560,6 @@
 
     let VALID_BATCH_CODE = "TL211126";
 
-    // Published Public CSV Endpoints
     const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1114785347&single=true&output=csv";
     const PUBLIC_FEED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1149121719&single=true&output=csv";
 
@@ -545,7 +570,6 @@
         .map(row => row.split(',').map(cell => cell.replace(/^"|"$/g, '').trim()));
     }
 
-    // Load Public Feed CSV (Learner Count)
     async function loadPublicFeed() {
       try {
         const res = await fetch(PUBLIC_FEED_CSV_URL);
@@ -566,7 +590,6 @@
       }
     }
 
-    // Load Master Courses CSV Metadata
     async function loadMasterCourses() {
       try {
         const res = await fetch(MASTER_CSV_URL);
@@ -575,23 +598,64 @@
         
         if (rows.length > 1) {
           const row = rows[1];
-          VALID_BATCH_CODE = row[0] || VALID_BATCH_CODE;
-          document.getElementById('courseTitle').textContent = row[1] || "Google Flow for Beginners";
-          document.getElementById('eventDateTime').textContent = `${row[2]} • ${row[3]}`;
-          document.getElementById('eventLink').textContent = row[4] || "Online Event (Free)";
-          document.getElementById('courseOverview').textContent = row[7] || "";
-          
-          // CONDITIONAL BANNER RENDER: Check if Banner Image ID exists (Col I / row[8])
+
+          // 1. Batch Code & Title
+          VALID_BATCH_CODE = row[0] ? row[0].trim() : VALID_BATCH_CODE;
+          if (row[1]) document.getElementById('courseTitle').textContent = row[1].trim();
+
+          // 2. Date & Time
+          const dateStr = row[2] ? row[2].trim() : "";
+          const timeStr = row[3] ? row[3].trim() : "";
+          if (dateStr || timeStr) {
+            document.getElementById('eventDateTime').textContent = `${dateStr} ${timeStr ? '• ' + timeStr : ''}`.trim();
+            document.getElementById('dateTimeItem').style.display = 'flex';
+          }
+
+          // 3. Location / Link
+          const locationStr = row[4] ? row[4].trim() : "";
+          if (locationStr && locationStr !== "-") {
+            document.getElementById('eventLink').textContent = locationStr;
+            document.getElementById('locationItem').style.display = 'flex';
+          }
+
+          // 4. Facilitator & WhatsApp
+          const facilitator = row[5] ? row[5].trim() : "";
+          const waNumber = row[6] ? row[6].replace(/[^0-9]/g, '') : "";
+          if (facilitator && facilitator !== "-") {
+            document.getElementById('facilitatorName').textContent = facilitator;
+            const waLink = document.getElementById('facilitatorWALink');
+            
+            if (waNumber) {
+              const msg = encodeURIComponent(`Hi ${facilitator}, I have a query regarding ${document.getElementById('courseTitle').textContent}`);
+              waLink.href = `https://wa.me/${waNumber}?text=${msg}`;
+              waLink.style.display = 'inline-flex';
+            } else {
+              waLink.style.display = 'none';
+            }
+            document.getElementById('facilitatorItem').style.display = 'flex';
+          }
+
+          // 5. Overview Text
+          const overviewText = row[7] ? row[7].trim() : "";
+          if (overviewText && overviewText !== "-") {
+            document.getElementById('courseOverview').textContent = overviewText;
+            document.getElementById('overviewSection').style.display = 'block';
+          }
+
+          // 6. Dynamic Hero Image
           const imageId = row[8] ? row[8].trim() : "";
           if (imageId && imageId !== "-" && imageId.toLowerCase() !== "undefined") {
-            heroBanner.src = `https://lh3.googleusercontent.com/d/${imageId}`;
+            // Using Google Drive Thumbnail URL for reliable cross-domain rendering
+            heroBanner.src = `https://drive.google.com/thumbnail?id=${imageId}&sz=w1000`;
             heroCard.style.display = "block";
           } else {
             heroCard.style.display = "none";
           }
 
-          if (row[9]) {
-            document.getElementById('organizerLogo').src = `https://lh3.googleusercontent.com/d/${row[9]}`;
+          // 7. Organizer Logo
+          const logoId = row[9] ? row[9].trim() : "";
+          if (logoId && logoId !== "-") {
+            document.getElementById('organizerLogo').src = `https://drive.google.com/thumbnail?id=${logoId}&sz=w200`;
           }
         }
       } catch (e) {
@@ -628,7 +692,6 @@
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    // Modal Controls
     openModalBtn.addEventListener('click', () => {
       if (!openModalBtn.disabled) {
         batchCodeFormInput.value = batchCodeInput.value.trim().toUpperCase();
@@ -642,7 +705,6 @@
       if (e.target === modalOverlay) modalOverlay.classList.remove('open');
     });
 
-    // Success Handler triggered on iframe load completion
     function handleSubmissionSuccess() {
       if (!submitted) return;
       
@@ -657,7 +719,6 @@
       setTimeout(loadPublicFeed, 2500);
     }
 
-    // Share Button Listener
     shareBtn.addEventListener('click', async () => {
       const shareData = {
         title: document.getElementById('courseTitle').textContent,
