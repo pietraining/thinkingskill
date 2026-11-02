@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Class Registration | Thinkers Hub</title>
+  
+  <!-- Open Graph / Social Sharing Meta Tags -->
+  <meta property="og:title" content="Class Registration | Thinkers Hub" />
+  <meta property="og:description" content="Reserve your spot for upcoming Thinkers Hub live learning sessions." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Class Registration | Thinkers Hub" />
+  <meta name="twitter:description" content="Reserve your spot for upcoming Thinkers Hub live learning sessions." />
+
   <!-- Google Fonts & Lucide Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -163,6 +172,15 @@
     }
 
     .meta-item i { color: var(--steel-blue); margin-top: 2px; flex-shrink: 0; }
+
+    .facilitator-link {
+      color: var(--steel-blue);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    .facilitator-link:hover {
+      color: var(--steel-blue-hover);
+    }
 
     .wa-btn {
       display: inline-flex;
@@ -520,7 +538,7 @@
       </a>
 
       <div class="action-icons">
-        <button class="icon-btn" id="shareBtn" title="Share Event">
+        <button class="icon-btn" id="shareBtn" title="Share Course">
           <i data-lucide="share-2" size="18"></i>
         </button>
       </div>
@@ -546,7 +564,7 @@
           <div class="meta-list">
             <div class="meta-item" id="locationItem" style="display: none;">
               <i data-lucide="map-pin" size="18"></i>
-              <span id="eventLink">Online Event (Free)</span>
+              <span id="eventLink">Online Class (Free)</span>
             </div>
             <div class="meta-item" id="dateTimeItem" style="display: none;">
               <i data-lucide="calendar" size="18"></i>
@@ -677,7 +695,7 @@
           <i data-lucide="check-circle-2" size="32"></i>
         </div>
         <h3 class="ack-title">Acknowledgement Message</h3>
-        <p class="ack-body">Registration successful! Check your email for event access instructions.</p>
+        <p class="ack-body">Registration successful! Check your email for course access instructions.</p>
         <button class="ack-ok-btn" id="ackOkBtn">OK</button>
       </div>
     </div>
@@ -826,16 +844,25 @@
         const cleanLink = extractUrl(rawLink);
         if (cleanLink && cleanLink !== "-") {
           document.getElementById("eventLink").textContent =
-            cleanLink.startsWith("http") ? "Online Event (Free)" : cleanLink;
+            cleanLink.startsWith("http") ? "Online Class (Free)" : cleanLink;
           document.getElementById("locationItem").style.display = "flex";
         }
 
         const facilitator = row[5]?.trim() || "";
         const waNumber = (row[6] || "").replace(/[^0-9]/g, "");
-        if (facilitator && facilitator !== "-") {
-          document.getElementById("facilitatorName").textContent = facilitator;
-          const waBtn = document.getElementById("facilitatorWALink");
+        const facilitatorUrl = row[10]?.trim() || ""; // Column K (Index 10)
 
+        if (facilitator && facilitator !== "-") {
+          const nameContainer = document.getElementById("facilitatorName");
+          
+          // Render as hyperlink if URL exists in Column K, otherwise plain text
+          if (facilitatorUrl && facilitatorUrl.startsWith("http")) {
+            nameContainer.innerHTML = `<a href="${facilitatorUrl}" target="_blank" class="facilitator-link">${facilitator}</a>`;
+          } else {
+            nameContainer.textContent = facilitator;
+          }
+
+          const waBtn = document.getElementById("facilitatorWALink");
           if (waNumber) {
             const msg = encodeURIComponent(
               `Hi ${facilitator}, I registered for ${document.getElementById("courseTitle").textContent}.`
@@ -946,7 +973,7 @@
         try { await navigator.share(shareData); } catch (err) {}
       } else {
         navigator.clipboard.writeText(window.location.href);
-        showToast('Event link copied to clipboard!');
+        showToast('Link copied to clipboard!');
       }
     });
   </script>
