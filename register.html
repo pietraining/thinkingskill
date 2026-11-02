@@ -542,32 +542,34 @@
     loadMasterCourses();
     loadPublicFeed();
 
-    // Heart Click Listener (Posts background LIKE hit)
-    heartBtn.addEventListener('click', () => {
-      if (!hasLiked) {
-        hasLiked = true;
-        currentLoveCount++;
-        loveCountText.textContent = currentLoveCount;
-        heartBtn.classList.add('active-heart');
-        localStorage.setItem('hasLiked_' + VALID_BATCH_CODE, 'true');
+    // Heart Click Listener (Posts background LIKE hit cleanly)
+heartBtn.addEventListener('click', () => {
+  if (!hasLiked) {
+    hasLiked = true;
+    currentLoveCount++;
+    loveCountText.textContent = currentLoveCount;
+    heartBtn.classList.add('active-heart');
+    localStorage.setItem('hasLiked_' + VALID_BATCH_CODE, 'true');
 
-        const loveFormData = new FormData();
-        loveFormData.append(NAME_ENTRY_ID, "Anonymous Supporter");
-        loveFormData.append(EMAIL_ENTRY_ID, "like@thinklab.internal");
-        loveFormData.append(BATCH_CODE_ENTRY_ID, "LIKE_" + VALID_BATCH_CODE);
+    // Use URLSearchParams for cross-origin no-cors compatibility
+    const params = new URLSearchParams();
+    params.append(NAME_ENTRY_ID, "Anonymous Supporter");
+    params.append(EMAIL_ENTRY_ID, "like@thinklab.internal");
+    params.append(BATCH_CODE_ENTRY_ID, "LIKE_" + VALID_BATCH_CODE);
 
-        fetch(GOOGLE_FORM_ACTION_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          body: loveFormData
-        }).catch(err => console.warn('Heart hit error:', err));
+    fetch(GOOGLE_FORM_ACTION_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
+    }).catch(err => console.warn('Heart hit error:', err));
 
-        showToast('Thanks for loving this event!');
-      } else {
-        showToast('You already liked this event!');
-      }
-      lucide.createIcons();
-    });
+    showToast('Thanks for loving this event!');
+  } else {
+    showToast('You already liked this event!');
+  }
+  lucide.createIcons();
+});
 
     // Batch Code Validation
     batchCodeInput.addEventListener('input', () => {
@@ -603,43 +605,45 @@
       if (e.target === modalOverlay) modalOverlay.classList.remove('open');
     });
 
-    // Booking Submission
-    bookingForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+// Registration Booking Form Submission
+bookingForm.addEventListener('submit', (e) => {
+  e.preventDefault();
 
-      const nameValue = document.getElementById('name').value.trim();
-      const emailValue = document.getElementById('email').value.trim();
-      const batchCodeValue = batchCodeInput.value.trim().toUpperCase();
+  const nameValue = document.getElementById('name').value.trim();
+  const emailValue = document.getElementById('email').value.trim();
+  const batchCodeValue = batchCodeInput.value.trim().toUpperCase();
 
-      const formData = new FormData();
-      formData.append(NAME_ENTRY_ID, nameValue);
-      formData.append(EMAIL_ENTRY_ID, emailValue);
-      formData.append(BATCH_CODE_ENTRY_ID, batchCodeValue);
+  const submitBtn = bookingForm.querySelector('.submit-btn');
+  submitBtn.textContent = 'Submitting...';
+  submitBtn.disabled = true;
 
-      const submitBtn = bookingForm.querySelector('.submit-btn');
-      submitBtn.textContent = 'Submitting...';
-      submitBtn.disabled = true;
+  // Build URL-encoded string payload
+  const params = new URLSearchParams();
+  params.append(NAME_ENTRY_ID, nameValue);
+  params.append(EMAIL_ENTRY_ID, emailValue);
+  params.append(BATCH_CODE_ENTRY_ID, batchCodeValue);
 
-      fetch(GOOGLE_FORM_ACTION_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData
-      })
-      .then(() => {
-        alert('Registration successful! Check your email for event access instructions.');
-        modalOverlay.classList.remove('open');
-        bookingForm.reset();
-        setTimeout(loadPublicFeed, 2500);
-      })
-      .catch((error) => {
-        console.error('Submission error:', error);
-        alert('Registration failed. Please try again.');
-      })
-      .finally(() => {
-        submitBtn.textContent = 'Confirm Registration';
-        submitBtn.disabled = false;
-      });
-    });
+  fetch(GOOGLE_FORM_ACTION_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString()
+  })
+  .then(() => {
+    alert('Registration successful! Check your email for event access instructions.');
+    modalOverlay.classList.remove('open');
+    bookingForm.reset();
+    setTimeout(loadPublicFeed, 2500);
+  })
+  .catch((error) => {
+    console.error('Submission error:', error);
+    alert('Registration failed. Please try again.');
+  })
+  .finally(() => {
+    submitBtn.textContent = 'Confirm Registration';
+    submitBtn.disabled = false;
+  });
+});
 
     shareBtn.addEventListener('click', async () => {
       const shareData = {
