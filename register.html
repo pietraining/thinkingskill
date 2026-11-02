@@ -101,7 +101,7 @@
       overflow-y: auto;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
-      padding: 0 0 110px 0; /* Padding removed from sides to allow edge-to-edge top image */
+      padding: 0 0 110px 0;
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
@@ -180,20 +180,22 @@
     }
     .wa-btn:hover { opacity: 0.9; }
 
+    /* Organizer Card with Collapsible Learner List Dropdown */
     .organizer-card {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 14px;
       background-color: #f8fafc;
       border: 1px solid var(--border);
       border-radius: 10px;
       margin-top: 16px;
       margin-bottom: 18px;
+      overflow: hidden;
     }
 
-    .organizer-info { display: flex; align-items: center; gap: 12px; }
+    .organizer-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+    }
 
     .organizer-logo {
       width: 40px;
@@ -205,57 +207,84 @@
       flex-shrink: 0;
     }
 
-    .organizer-details { display: flex; flex-direction: column; }
-    .organizer-by { font-size: 13px; color: var(--text-muted); font-weight: 500; line-height: 1.2; }
-    .organizer-name { font-weight: 700; color: var(--brand-navy); }
-    .organizer-subtext { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-    .visit-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 7px 16px;
-      border: 1.5px solid var(--steel-blue);
-      border-radius: 6px;
-      background-color: #ffffff;
-      color: var(--steel-blue);
-      font-weight: 700;
-      font-size: 13px;
-      text-decoration: none;
-      transition: all 0.2s;
+    .organizer-details { 
+      display: flex; 
+      flex-direction: column; 
+      flex: 1;
     }
 
-    .visit-btn:hover { background-color: var(--steel-blue); color: #ffffff; }
+    .organizer-by { 
+      font-size: 13px; 
+      color: var(--text-muted); 
+      font-weight: 500; 
+      line-height: 1.2; 
+    }
+
+    .organizer-name { 
+      font-weight: 700; 
+      color: var(--brand-navy); 
+    }
+
+    /* Combo Box / Dropdown Styling */
+    .learners-dropdown {
+      margin-top: 4px;
+      width: 100%;
+    }
+
+    .learners-dropdown summary {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--steel-blue);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      user-select: none;
+    }
+
+    .learners-dropdown summary::-webkit-details-marker { display: none; }
+    
+    .learners-dropdown summary::after {
+      content: '▾';
+      font-size: 10px;
+      transition: transform 0.2s;
+    }
+
+    .learners-dropdown[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-learners-list {
+      list-style: none;
+      padding: 8px 14px 12px 14px;
+      margin: 0;
+      border-top: 1px solid var(--border);
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .dropdown-learner-item {
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dropdown-learner-item i {
+      color: var(--steel-blue);
+    }
 
     .divider { height: 1px; background-color: var(--border); margin: 20px 0; }
     .overview-section { display: none; }
     .section-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--brand-navy); }
     .overview-text { color: #475569; font-size: 14px; line-height: 1.6; }
-
-    /* Registered Learners Section */
-    .learners-section { display: none; }
-    .learners-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 0;
-      margin: 0;
-      text-align: left;
-    }
-    .learner-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #334155;
-      padding: 8px 12px;
-      background-color: #f8fafc;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-    }
-    .learner-item i { color: var(--steel-blue); flex-shrink: 0; }
 
     /* BOTTOM BAR */
     .bottom-bar {
@@ -372,6 +401,81 @@
     }
     .submit-btn:hover { background-color: var(--steel-blue-hover); }
 
+    /* Custom Acknowledgement Dialog Modal */
+    .ack-modal-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .ack-modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+    .ack-card {
+      width: 100%;
+      max-width: 380px;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ack-modal-overlay.open .ack-card { transform: scale(1); }
+
+    .ack-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      background-color: #dcfce7;
+      color: #16a34a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+    }
+
+    .ack-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--brand-navy);
+      margin-bottom: 8px;
+    }
+
+    .ack-body {
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .ack-ok-btn {
+      width: 100%;
+      background-color: var(--steel-blue);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .ack-ok-btn:hover {
+      background-color: var(--steel-blue-hover);
+    }
+
     .toast {
       position: absolute;
       top: 66px; left: 50%;
@@ -451,9 +555,9 @@
             </div>
           </div>
 
-          <!-- Organizer Card -->
+          <!-- Organizer Card with Embedded Learner List Dropdown (Visit button removed) -->
           <div class="organizer-card">
-            <div class="organizer-info">
+            <div class="organizer-header">
               <img 
                 id="organizerLogo"
                 src="https://lh3.googleusercontent.com/d/1IBGBjphVdRvG1VkRRVxAXC4WrBj6egAg" 
@@ -462,10 +566,15 @@
               />
               <div class="organizer-details">
                 <span class="organizer-by">by <span class="organizer-name">Thinkers Hub</span></span>
-                <span class="organizer-subtext" id="learnersCount">0 learners joined</span>
+                
+                <!-- Collapsible Dropdown Combo Box -->
+                <details class="learners-dropdown" id="learnersDropdown">
+                  <summary id="learnersCount">0 learners joined</summary>
+                </details>
               </div>
             </div>
-            <a href="https://www.thinkingskill.in" target="_blank" class="visit-btn">Visit</a>
+            
+            <ul class="dropdown-learners-list" id="dropdownLearnersContainer" style="display: none;"></ul>
           </div>
 
           <!-- Overview Section -->
@@ -474,15 +583,6 @@
             <section>
               <h2 class="section-title">Overview</h2>
               <p class="overview-text" id="courseOverview"></p>
-            </section>
-          </div>
-
-          <!-- Registered Learners Section -->
-          <div class="learners-section" id="learnersSection">
-            <div class="divider"></div>
-            <section>
-              <h2 class="section-title">Registered Learners</h2>
-              <ul class="learners-list" id="learnersContainer"></ul>
             </section>
           </div>
         </main>
@@ -556,6 +656,18 @@
         </form>
       </div>
     </div>
+
+    <!-- Custom Acknowledgement Message Dialog -->
+    <div class="ack-modal-overlay" id="ackModalOverlay">
+      <div class="ack-card">
+        <div class="ack-icon-wrapper">
+          <i data-lucide="check-circle-2" size="32"></i>
+        </div>
+        <h3 class="ack-title">Acknowledgement Message</h3>
+        <p class="ack-body">Registration successful! Check your email for event access instructions.</p>
+        <button class="ack-ok-btn" id="ackOkBtn">OK</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -574,8 +686,10 @@
     const submitBtn = document.getElementById('submitBtn');
     const heroCard = document.getElementById('heroCard');
     const heroBanner = document.getElementById('heroBanner');
-    const learnersSection = document.getElementById('learnersSection');
-    const learnersContainer = document.getElementById('learnersContainer');
+    const dropdownLearnersContainer = document.getElementById('dropdownLearnersContainer');
+    const learnersDropdown = document.getElementById('learnersDropdown');
+    const ackModalOverlay = document.getElementById('ackModalOverlay');
+    const ackOkBtn = document.getElementById('ackOkBtn');
 
     let VALID_BATCH_CODE = "TL211126";
 
@@ -642,16 +756,20 @@
         document.getElementById('learnersCount').textContent = `${learnerCount} learner${learnerCount === 1 ? '' : 's'} joined`;
 
         if (names.length > 0) {
-          learnersContainer.innerHTML = names.map(name => `
-            <li class="learner-item">
-              <i data-lucide="user-check" size="16"></i>
+          dropdownLearnersContainer.innerHTML = names.map(name => `
+            <li class="dropdown-learner-item">
+              <i data-lucide="user-check" size="14"></i>
               <span>${name}</span>
             </li>
           `).join('');
-          learnersSection.style.display = "block";
+          
+          // Toggle list inside combo box card when details expands/collapses
+          learnersDropdown.addEventListener('toggle', () => {
+            dropdownLearnersContainer.style.display = learnersDropdown.open ? 'flex' : 'none';
+          });
           lucide.createIcons();
         } else {
-          learnersSection.style.display = "none";
+          dropdownLearnersContainer.style.display = 'none';
         }
       } catch (e) {
         console.warn("Could not load Public Feed CSV:", e);
@@ -789,9 +907,10 @@
     function handleSubmissionSuccess() {
       if (!submitted) return;
       
-      alert('Registration successful! Check your email for event access instructions.');
       modalOverlay.classList.remove('open');
       bookingForm.reset();
+
+      ackModalOverlay.classList.add('open');
 
       submitBtn.disabled = false;
       submitBtn.textContent = 'Confirm Registration';
@@ -799,6 +918,10 @@
 
       setTimeout(loadPublicFeed, 2500);
     }
+
+    ackOkBtn.addEventListener('click', () => {
+      ackModalOverlay.classList.remove('open');
+    });
 
     shareBtn.addEventListener('click', async () => {
       const shareData = {
