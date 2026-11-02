@@ -113,6 +113,7 @@
 
     .content-scroll::-webkit-scrollbar { display: none; }
 
+    /* Hidden by default to prevent broken image icon flash */
     .hero-card {
       background: #ffffff;
       border-radius: 12px;
@@ -120,7 +121,7 @@
       border: 1px solid var(--border);
       box-shadow: var(--shadow-sm);
       margin-bottom: 12px;
-      display: block; /* Toggled dynamically in JS */
+      display: none; 
     }
 
     .hero-image-container {
@@ -384,17 +385,17 @@
       </div>
     </header>
 
-    <!-- Scrollable Content (Silver Background with White Cards) -->
+    <!-- Scrollable Content -->
     <div class="content-scroll">
       
-      <!-- Hero Image Card (Hidden dynamically if no image ID) -->
+      <!-- Hero Image Card (Hidden initially, shown only if valid ID loads) -->
       <div class="hero-card" id="heroCard">
         <div class="hero-image-container">
           <img 
             id="heroBanner"
-            src="" 
             alt="Course Banner" 
             class="hero-image"
+            onerror="document.getElementById('heroCard').style.display='none';"
           />
         </div>
       </div>
@@ -582,11 +583,10 @@
           
           // CONDITIONAL BANNER RENDER: Check if Banner Image ID exists (Col I / row[8])
           const imageId = row[8] ? row[8].trim() : "";
-          if (imageId && imageId !== "-" && imageId !== "undefined") {
+          if (imageId && imageId !== "-" && imageId.toLowerCase() !== "undefined") {
             heroBanner.src = `https://lh3.googleusercontent.com/d/${imageId}`;
             heroCard.style.display = "block";
           } else {
-            // Hide hero banner container completely if no image ID provided
             heroCard.style.display = "none";
           }
 
@@ -596,6 +596,7 @@
         }
       } catch (e) {
         console.warn("Could not load Master Courses CSV:", e);
+        heroCard.style.display = "none";
       }
     }
 
