@@ -106,13 +106,15 @@
 
     .content-scroll::-webkit-scrollbar { display: none; }
 
+    /* Full Width Hero Card */
     .hero-card {
       background: #ffffff;
       border-radius: 12px;
-      padding: 12px;
+      padding: 0;
       border: 1px solid var(--border);
       box-shadow: var(--shadow-sm);
       margin-bottom: 12px;
+      overflow: hidden;
       display: none; 
     }
 
@@ -125,12 +127,10 @@
     }
 
     .hero-image {
-      max-width: 100%;
-      max-height: 100%;
-      width: auto;
-      height: auto;
-      object-fit: contain;
-      border-radius: 6px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .main-content-card {
@@ -418,7 +418,7 @@
     <!-- Scrollable Content -->
     <div class="content-scroll">
       
-      <!-- Hero Image Card -->
+      <!-- Full-Width Hero Image Card -->
       <div class="hero-card" id="heroCard">
         <div class="hero-image-container">
           <img 
