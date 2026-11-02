@@ -335,6 +335,15 @@
   <div class="app-container">
     <div class="toast" id="toast">Link copied to clipboard!</div>
 
+    <!-- Hidden iframe for Google Forms submission -->
+    <iframe
+      name="hidden_iframe"
+      id="hidden_iframe"
+      style="display:none;"
+      title="Registration submission"
+      onload="if(submitted) { handleSubmissionSuccess(); }">
+    </iframe>
+
     <!-- Top Bar -->
     <header class="top-bar">
       <a href="https://www.thinkingskill.in" class="back-btn">
@@ -426,16 +435,28 @@
             <i data-lucide="x" size="20"></i>
           </button>
         </div>
-        <form id="bookingForm">
+
+        <!-- Form submitting directly to hidden_iframe -->
+        <form 
+          id="bookingForm"
+          action="https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse"
+          method="POST"
+          target="hidden_iframe"
+          onsubmit="return handleRegistrationSubmit();">
+
           <div class="form-group">
             <label class="form-label" for="name">Full Name</label>
-            <input type="text" id="name" class="form-input" placeholder="John Doe" required />
+            <input type="text" id="name" name="entry.1284435015" class="form-input" placeholder="John Doe" required />
           </div>
           <div class="form-group">
             <label class="form-label" for="email">Email Address</label>
-            <input type="email" id="email" class="form-input" placeholder="john@example.com" required />
+            <input type="email" id="email" name="entry.1988767158" class="form-input" placeholder="john@example.com" required />
           </div>
-          <button type="submit" class="submit-btn">Confirm Registration</button>
+
+          <!-- Hidden field to pass Batch Code dynamically -->
+          <input type="hidden" id="batchCodeFormInput" name="entry.2046668482" value="" />
+
+          <button type="submit" class="submit-btn" id="submitBtn">Confirm Registration</button>
         </form>
       </div>
     </div>
@@ -443,6 +464,8 @@
 
   <script>
     lucide.createIcons();
+
+    let submitted = false;
 
     // DOM Elements
     const modalOverlay = document.getElementById('modalOverlay');
@@ -452,18 +475,14 @@
     const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
     const batchCodeInput = document.getElementById('batchCodeInput');
+    const batchCodeFormInput = document.getElementById('batchCodeFormInput');
+    const submitBtn = document.getElementById('submitBtn');
 
     let VALID_BATCH_CODE = "TL211126";
 
     // Published Public CSV Endpoints
     const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1114785347&single=true&output=csv";
     const PUBLIC_FEED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1149121719&single=true&output=csv";
-
-    // Google Form Entry IDs
-    const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse";
-    const NAME_ENTRY_ID = "entry.1284435015";       
-    const EMAIL_ENTRY_ID = "entry.1988767158";      
-    const BATCH_CODE_ENTRY_ID = "entry.2046668482"; 
 
     function parseCSV(text) {
       return text.split('\n')
@@ -522,6 +541,8 @@
     // Batch Code Validation
     batchCodeInput.addEventListener('input', () => {
       const enteredCode = batchCodeInput.value.trim().toUpperCase();
+      batchCodeFormInput.value = enteredCode;
+
       if (enteredCode === VALID_BATCH_CODE) {
         openModalBtn.disabled = false;
         batchCodeInput.classList.remove('is-invalid');
@@ -554,44 +575,28 @@
       if (e.target === modalOverlay) modalOverlay.classList.remove('open');
     });
 
-    // Booking Registration Submission (URLSearchParams)
-    bookingForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const nameValue = document.getElementById('name').value.trim();
-      const emailValue = document.getElementById('email').value.trim();
-      const batchCodeValue = batchCodeInput.value.trim().toUpperCase();
-
-      const submitBtn = bookingForm.querySelector('.submit-btn');
-      submitBtn.textContent = 'Submitting...';
+    // Form submission handler called via onsubmit
+    function handleRegistrationSubmit() {
+      submitted = true;
       submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      return true;
+    }
 
-      const params = new URLSearchParams();
-      params.append(NAME_ENTRY_ID, nameValue);
-      params.append(EMAIL_ENTRY_ID, emailValue);
-      params.append(BATCH_CODE_ENTRY_ID, batchCodeValue);
+    // Success handler triggered by hidden_iframe onload event
+    function handleSubmissionSuccess() {
+      if (!submitted) return;
+      
+      alert('Registration successful! Check your email for event access instructions.');
+      modalOverlay.classList.remove('open');
+      bookingForm.reset();
+      
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Confirm Registration';
+      submitted = false;
 
-      fetch(GOOGLE_FORM_ACTION_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params.toString()
-      })
-      .then(() => {
-        alert('Registration successful! Check your email for event access instructions.');
-        modalOverlay.classList.remove('open');
-        bookingForm.reset();
-        setTimeout(loadPublicFeed, 2500);
-      })
-      .catch((error) => {
-        console.error('Submission error:', error);
-        alert('Registration failed. Please try again.');
-      })
-      .finally(() => {
-        submitBtn.textContent = 'Confirm Registration';
-        submitBtn.disabled = false;
-      });
-    });
+      setTimeout(loadPublicFeed, 2500);
+    }
 
     // Share Button Listener
     shareBtn.addEventListener('click', async () => {
