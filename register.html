@@ -17,7 +17,6 @@
       --steel-blue: #4682b4;
       --steel-blue-hover: #36648b;
 
-      --bg-silver: #f1f5f9;
       --surface-white: #ffffff;
       --text-main: #0f172a;
       --text-muted: #64748b;
@@ -29,7 +28,7 @@
 
     html, body {
       height: 100%;
-      background-color: #e2e8f0;
+      background-color: #ffffff;
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       line-height: 1.5;
@@ -42,7 +41,7 @@
       max-width: 480px;
       height: 100vh;
       height: 100dvh;
-      background: var(--bg-silver);
+      background: #ffffff;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -94,10 +93,10 @@
 
     .icon-btn:hover { background: #ffffff; border-color: #cbd5e1; }
 
-    /* CONTENT SCROLL */
+    /* CONTENT SCROLL (Pure White Background) */
     .content-scroll {
       flex: 1;
-      background: var(--bg-silver);
+      background: #ffffff;
       overflow-y: auto;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
@@ -126,15 +125,16 @@
     }
 
     .main-content-wrapper {
-      padding: 12px;
+      padding: 20px 16px;
+      background: #ffffff;
     }
 
     .main-content-card {
       background: #ffffff;
-      border-radius: 12px;
-      padding: 20px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
+      border-radius: 0;
+      padding: 0;
+      border: none;
+      box-shadow: none;
     }
 
     .event-title {
@@ -180,7 +180,7 @@
     }
     .wa-btn:hover { opacity: 0.9; }
 
-    /* Organizer Card with Collapsible Learner List Dropdown */
+    /* Organizer Card with Right-Aligned "Learners (X)" Combo Box */
     .organizer-card {
       background-color: #f8fafc;
       border: 1px solid var(--border);
@@ -193,8 +193,15 @@
     .organizer-header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
       padding: 12px 14px;
+    }
+
+    .organizer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .organizer-logo {
@@ -205,12 +212,6 @@
       background-color: #e2e8f0;
       border: 1px solid var(--border);
       flex-shrink: 0;
-    }
-
-    .organizer-details { 
-      display: flex; 
-      flex-direction: column; 
-      flex: 1;
     }
 
     .organizer-by { 
@@ -225,12 +226,7 @@
       color: var(--brand-navy); 
     }
 
-    /* Combo Box / Dropdown Styling */
-    .learners-dropdown {
-      margin-top: 4px;
-      width: 100%;
-    }
-
+    /* Right-Aligned Learners Toggle Button */
     .learners-dropdown summary {
       font-size: 12px;
       font-weight: 700;
@@ -241,6 +237,16 @@
       align-items: center;
       gap: 4px;
       user-select: none;
+      padding: 6px 12px;
+      background-color: #ffffff;
+      border: 1.5px solid var(--steel-blue);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .learners-dropdown summary:hover {
+      background-color: var(--steel-blue);
+      color: #ffffff;
     }
 
     .learners-dropdown summary::-webkit-details-marker { display: none; }
@@ -248,6 +254,7 @@
     .learners-dropdown summary::after {
       content: '▾';
       font-size: 10px;
+      margin-left: 2px;
       transition: transform 0.2s;
     }
 
@@ -257,13 +264,13 @@
 
     .dropdown-learners-list {
       list-style: none;
-      padding: 8px 14px 12px 14px;
+      padding: 10px 14px;
       margin: 0;
       border-top: 1px solid var(--border);
       background-color: #ffffff;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       max-height: 160px;
       overflow-y: auto;
     }
@@ -555,23 +562,23 @@
             </div>
           </div>
 
-          <!-- Organizer Card with Embedded Learner List Dropdown (Visit button removed) -->
+          <!-- Organizer Card with Right-Aligned Learners (X) Button -->
           <div class="organizer-card">
             <div class="organizer-header">
-              <img 
-                id="organizerLogo"
-                src="https://lh3.googleusercontent.com/d/1IBGBjphVdRvG1VkRRVxAXC4WrBj6egAg" 
-                alt="Thinkers Hub Logo" 
-                class="organizer-logo"
-              />
-              <div class="organizer-details">
+              <div class="organizer-left">
+                <img 
+                  id="organizerLogo"
+                  src="https://lh3.googleusercontent.com/d/1IBGBjphVdRvG1VkRRVxAXC4WrBj6egAg" 
+                  alt="Thinkers Hub Logo" 
+                  class="organizer-logo"
+                />
                 <span class="organizer-by">by <span class="organizer-name">Thinkers Hub</span></span>
-                
-                <!-- Collapsible Dropdown Combo Box -->
-                <details class="learners-dropdown" id="learnersDropdown">
-                  <summary id="learnersCount">0 learners joined</summary>
-                </details>
               </div>
+              
+              <!-- Right-Aligned Dropdown Combo Box -->
+              <details class="learners-dropdown" id="learnersDropdown">
+                <summary id="learnersCount">Learners (0)</summary>
+              </details>
             </div>
             
             <ul class="dropdown-learners-list" id="dropdownLearnersContainer" style="display: none;"></ul>
@@ -753,7 +760,7 @@
         });
 
         const learnerCount = names.length;
-        document.getElementById('learnersCount').textContent = `${learnerCount} learner${learnerCount === 1 ? '' : 's'} joined`;
+        document.getElementById('learnersCount').textContent = `Learners (${learnerCount})`;
 
         if (names.length > 0) {
           dropdownLearnersContainer.innerHTML = names.map(name => `
@@ -763,7 +770,6 @@
             </li>
           `).join('');
           
-          // Toggle list inside combo box card when details expands/collapses
           learnersDropdown.addEventListener('toggle', () => {
             dropdownLearnersContainer.style.display = learnersDropdown.open ? 'flex' : 'none';
           });
