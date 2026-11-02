@@ -335,15 +335,6 @@
   <div class="app-container">
     <div class="toast" id="toast">Link copied to clipboard!</div>
 
-    <!-- Hidden iframe for Google Forms submission -->
-    <iframe
-      name="hidden_iframe"
-      id="hidden_iframe"
-      style="display:none;"
-      title="Registration submission"
-      onload="if(submitted) { handleSubmissionSuccess(); }">
-    </iframe>
-
     <!-- Top Bar -->
     <header class="top-bar">
       <a href="https://www.thinkingskill.in" class="back-btn">
@@ -436,25 +427,15 @@
           </button>
         </div>
 
-        <!-- Form submitting directly to hidden_iframe -->
-        <form 
-          id="bookingForm"
-          action="https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse"
-          method="POST"
-          target="hidden_iframe"
-          onsubmit="return handleRegistrationSubmit();">
-
+        <form id="bookingForm">
           <div class="form-group">
             <label class="form-label" for="name">Full Name</label>
-            <input type="text" id="name" name="entry.1284435015" class="form-input" placeholder="John Doe" required />
+            <input type="text" id="name" class="form-input" placeholder="John Doe" required />
           </div>
           <div class="form-group">
             <label class="form-label" for="email">Email Address</label>
-            <input type="email" id="email" name="entry.1988767158" class="form-input" placeholder="john@example.com" required />
+            <input type="email" id="email" class="form-input" placeholder="john@example.com" required />
           </div>
-
-          <!-- Hidden field to pass Batch Code dynamically -->
-          <input type="hidden" id="batchCodeFormInput" name="entry.2046668482" value="" />
 
           <button type="submit" class="submit-btn" id="submitBtn">Confirm Registration</button>
         </form>
@@ -465,8 +446,6 @@
   <script>
     lucide.createIcons();
 
-    let submitted = false;
-
     // DOM Elements
     const modalOverlay = document.getElementById('modalOverlay');
     const openModalBtn = document.getElementById('openModalBtn');
@@ -475,7 +454,6 @@
     const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
     const batchCodeInput = document.getElementById('batchCodeInput');
-    const batchCodeFormInput = document.getElementById('batchCodeFormInput');
     const submitBtn = document.getElementById('submitBtn');
 
     let VALID_BATCH_CODE = "TL211126";
@@ -483,6 +461,12 @@
     // Published Public CSV Endpoints
     const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1114785347&single=true&output=csv";
     const PUBLIC_FEED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1149121719&single=true&output=csv";
+
+    // Google Form Entry IDs & Action Endpoint
+    const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse";
+    const NAME_ENTRY_ID = "entry.1284435015";       
+    const EMAIL_ENTRY_ID = "entry.1988767158";      
+    const BATCH_CODE_ENTRY_ID = "entry.2046668482"; 
 
     function parseCSV(text) {
       return text.split('\n')
@@ -541,7 +525,6 @@
     // Batch Code Validation
     batchCodeInput.addEventListener('input', () => {
       const enteredCode = batchCodeInput.value.trim().toUpperCase();
-      batchCodeFormInput.value = enteredCode;
 
       if (enteredCode === VALID_BATCH_CODE) {
         openModalBtn.disabled = false;
@@ -575,28 +558,46 @@
       if (e.target === modalOverlay) modalOverlay.classList.remove('open');
     });
 
-    // Form submission handler called via onsubmit
-    function handleRegistrationSubmit() {
-      submitted = true;
-      submitBtn.disabled = true;
+    // Form Submission using direct URLSearchParams & no-cors Fetch
+    bookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nameValue = document.getElementById('name').value.trim();
+      const emailValue = document.getElementById('email').value.trim();
+      const batchCodeValue = batchCodeInput.value.trim().toUpperCase();
+
       submitBtn.textContent = 'Submitting...';
-      return true;
-    }
+      submitBtn.disabled = true;
 
-    // Success handler triggered by hidden_iframe onload event
-    function handleSubmissionSuccess() {
-      if (!submitted) return;
-      
-      alert('Registration successful! Check your email for event access instructions.');
-      modalOverlay.classList.remove('open');
-      bookingForm.reset();
-      
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Confirm Registration';
-      submitted = false;
+      // Construct URL encoded body directly mapping Google Form IDs
+      const bodyParams = new URLSearchParams();
+      bodyParams.append(NAME_ENTRY_ID, nameValue);
+      bodyParams.append(EMAIL_ENTRY_ID, emailValue);
+      bodyParams.append(BATCH_CODE_ENTRY_ID, batchCodeValue);
 
-      setTimeout(loadPublicFeed, 2500);
-    }
+      try {
+        await fetch(GOOGLE_FORM_ACTION_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: bodyParams.toString()
+        });
+
+        alert('Registration successful! Check your email for event access instructions.');
+        modalOverlay.classList.remove('open');
+        bookingForm.reset();
+        setTimeout(loadPublicFeed, 2500);
+
+      } catch (error) {
+        console.error('Submission error:', error);
+        alert('Registration failed. Please try again.');
+      } finally {
+        submitBtn.textContent = 'Confirm Registration';
+        submitBtn.disabled = false;
+      }
+    });
 
     // Share Button Listener
     shareBtn.addEventListener('click', async () => {
