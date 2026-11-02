@@ -19,6 +19,10 @@
       --brand-navy-dark: #0b2550;
       --brand-light-blue: #e0f2fe;
       
+      /* New Panel & Button Colors */
+      --steel-blue: #4682b4;
+      --steel-blue-dark: #36648b;
+      
       --bg: #ffffff;
       --surface: #f8fafc;
       --text-main: #0f172a;
@@ -211,18 +215,18 @@
     .section-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--brand-navy); }
     .overview-text { color: #475569; font-size: 15px; line-height: 1.6; }
 
-    /* BOTTOM BAR: Deep Navy Blue Palette */
+    /* BOTTOM BAR: Steel Blue Background with Navy Blue Button */
     .bottom-bar {
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 84px;
-      background: linear-gradient(135deg, var(--brand-navy-dark) 0%, var(--brand-navy) 100%);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(135deg, var(--steel-blue) 0%, var(--steel-blue-dark) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
       padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 -6px 20px rgba(16, 56, 116, 0.25);
+      box-shadow: 0 -6px 20px rgba(70, 130, 180, 0.3);
       z-index: 30;
       padding-bottom: max(12px, env(safe-area-inset-bottom));
     }
@@ -232,25 +236,26 @@
     .batch-input {
       width: 100%;
       padding: 10px 12px;
-      border: 1.5px solid #1e498a;
-      background-color: #081b3c;
-      color: #ffffff;
+      border: 1.5px solid #ffffff;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: var(--brand-navy);
       border-radius: 8px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       outline: none;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       transition: all 0.2s;
     }
 
-    .batch-input::placeholder { color: #64748b; }
-    .batch-input:focus { border-color: var(--brand-blue); background-color: #030d22; }
+    .batch-input::placeholder { color: #64748b; font-weight: 500; }
+    .batch-input:focus { border-color: var(--brand-navy); background-color: #ffffff; }
     .batch-input.is-invalid { border-color: #ef4444; }
     .batch-input.is-valid { border-color: #22c55e; }
 
+    /* BUTTON: Navy Blue Palette */
     .btn-reserve {
-      background-color: var(--brand-blue);
+      background-color: var(--brand-navy);
       color: #ffffff;
       border: none;
       padding: 12px 18px;
@@ -260,18 +265,18 @@
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(0, 130, 200, 0.35);
+      box-shadow: 0 4px 12px rgba(16, 56, 116, 0.35);
     }
 
     .btn-reserve:hover:not(:disabled) {
-      background-color: var(--brand-blue-hover);
+      background-color: var(--brand-navy-dark);
       transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(0, 130, 200, 0.45);
+      box-shadow: 0 6px 15px rgba(16, 56, 116, 0.45);
     }
 
     .btn-reserve:disabled {
-      background: #1e3a67;
-      color: #64748b;
+      background: #64748b;
+      color: #cbd5e1;
       cursor: not-allowed;
       box-shadow: none;
       transform: none;
@@ -311,8 +316,20 @@
     .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
     .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; }
     .form-input:focus { border-color: var(--brand-blue); }
-    .submit-btn { width: 100%; background-color: var(--brand-blue); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-    .submit-btn:hover { background-color: var(--brand-blue-hover); }
+    
+    .submit-btn { 
+      width: 100%; 
+      background-color: var(--brand-navy); 
+      color: white; 
+      border: none; 
+      padding: 12px; 
+      border-radius: 8px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      margin-top: 10px; 
+      transition: background-color 0.2s;
+    }
+    .submit-btn:hover { background-color: var(--brand-navy-dark); }
 
     .toast {
       position: absolute;
@@ -332,15 +349,6 @@
 
   <div class="app-container">
     <div class="toast" id="toast">Link copied to clipboard!</div>
-
-    <!-- Hidden iframe for direct Google Form submission -->
-    <iframe
-      name="hidden_iframe"
-      id="hidden_iframe"
-      style="display:none;"
-      title="Registration submission"
-      onload="if(submitted) { handleSubmissionSuccess(); }">
-    </iframe>
 
     <!-- Top Bar (White) -->
     <header class="top-bar">
@@ -409,7 +417,7 @@
       </main>
     </div>
 
-    <!-- Bottom Reservation Bar (Navy Blue) -->
+    <!-- Bottom Reservation Bar (Steel Blue with Navy Button) -->
     <footer class="bottom-bar">
       <div class="batch-input-wrapper">
         <input 
@@ -434,20 +442,12 @@
           </button>
         </div>
 
-        <!-- Standard Google Form POST targeting hidden_iframe -->
-        <form 
-          id="bookingForm"
-          action="https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse"
-          method="POST"
-          target="hidden_iframe"
-          onsubmit="return handleRegistrationSubmit();">
-
+        <form id="bookingForm">
           <div class="form-group">
             <label class="form-label" for="nameInput">Full Name</label>
             <input 
               type="text" 
               id="nameInput" 
-              name="entry.1284435015" 
               class="form-input" 
               placeholder="John Doe" 
               required 
@@ -459,20 +459,11 @@
             <input 
               type="email" 
               id="emailInput" 
-              name="entry.1988767158" 
               class="form-input" 
               placeholder="john@example.com" 
               required 
             />
           </div>
-
-          <!-- Hidden input that carries the validated Batch Code to Google Form -->
-          <input 
-            type="hidden" 
-            id="batchCodeFormInput" 
-            name="entry.2046668482" 
-            value="" 
-          />
 
           <button type="submit" class="submit-btn" id="submitBtn">Confirm Registration</button>
         </form>
@@ -483,8 +474,6 @@
   <script>
     lucide.createIcons();
 
-    let submitted = false;
-
     // DOM Elements
     const modalOverlay = document.getElementById('modalOverlay');
     const openModalBtn = document.getElementById('openModalBtn');
@@ -493,7 +482,6 @@
     const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
     const batchCodeInput = document.getElementById('batchCodeInput');
-    const batchCodeFormInput = document.getElementById('batchCodeFormInput');
     const submitBtn = document.getElementById('submitBtn');
 
     let VALID_BATCH_CODE = "TL211126";
@@ -501,6 +489,12 @@
     // Published Public CSV Endpoints
     const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1114785347&single=true&output=csv";
     const PUBLIC_FEED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1149121719&single=true&output=csv";
+
+    // Google Form FormResponse Endpoint & Entry IDs
+    const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse";
+    const NAME_ENTRY_ID = "entry.1284435015";       
+    const EMAIL_ENTRY_ID = "entry.1988767158";      
+    const BATCH_CODE_ENTRY_ID = "entry.2046668482"; 
 
     function parseCSV(text) {
       return text.split('\n')
@@ -584,8 +578,6 @@
     // Modal Controls
     openModalBtn.addEventListener('click', () => {
       if (!openModalBtn.disabled) {
-        // Copy the validated batch code into the form's hidden input
-        batchCodeFormInput.value = batchCodeInput.value.trim().toUpperCase();
         modalOverlay.classList.add('open');
       }
     });
@@ -596,28 +588,46 @@
       if (e.target === modalOverlay) modalOverlay.classList.remove('open');
     });
 
-    // Native form submit handler
-    function handleRegistrationSubmit() {
-      submitted = true;
-      submitBtn.disabled = true;
+    // Form submission using robust asynchronous fetch POST payload
+    bookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nameValue = document.getElementById('nameInput').value.trim();
+      const emailValue = document.getElementById('emailInput').value.trim();
+      const batchCodeValue = batchCodeInput.value.trim().toUpperCase();
+
       submitBtn.textContent = 'Submitting...';
-      return true;
-    }
+      submitBtn.disabled = true;
 
-    // Executed when hidden_iframe finishes loading Google's response page
-    function handleSubmissionSuccess() {
-      if (!submitted) return;
-      
-      alert('Registration successful! Check your email for event access instructions.');
-      modalOverlay.classList.remove('open');
-      bookingForm.reset();
-      
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Confirm Registration';
-      submitted = false;
+      // Construct Google Form URL encoded body
+      const formPayload = new URLSearchParams();
+      formPayload.append(NAME_ENTRY_ID, nameValue);
+      formPayload.append(EMAIL_ENTRY_ID, emailValue);
+      formPayload.append(BATCH_CODE_ENTRY_ID, batchCodeValue);
 
-      setTimeout(loadPublicFeed, 2500);
-    }
+      try {
+        await fetch(GOOGLE_FORM_ACTION_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: formPayload.toString()
+        });
+
+        alert('Registration successful! Check your email for event access instructions.');
+        modalOverlay.classList.remove('open');
+        bookingForm.reset();
+        setTimeout(loadPublicFeed, 2500);
+
+      } catch (error) {
+        console.error('Submission error:', error);
+        alert('Registration failed. Please try again.');
+      } finally {
+        submitBtn.textContent = 'Confirm Registration';
+        submitBtn.disabled = false;
+      }
+    });
 
     // Share Button Listener
     shareBtn.addEventListener('click', async () => {
