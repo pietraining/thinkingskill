@@ -236,6 +236,31 @@
     .section-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--brand-navy); }
     .overview-text { color: #475569; font-size: 14px; line-height: 1.6; }
 
+    /* Learners List Section */
+    .learners-section { display: none; }
+    .learners-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      text-align: left;
+    }
+    .learner-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #334155;
+      padding: 8px 12px;
+      background-color: #f8fafc;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .learner-item i { color: var(--steel-blue); flex-shrink: 0; }
+
     .bottom-bar {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -455,6 +480,15 @@
             <p class="overview-text" id="courseOverview"></p>
           </section>
         </div>
+
+        <!-- Registered Learners Section -->
+        <div class="learners-section" id="learnersSection">
+          <div class="divider"></div>
+          <section>
+            <h2 class="section-title">Registered Learners</h2>
+            <ul class="learners-list" id="learnersContainer"></ul>
+          </section>
+        </div>
       </main>
     </div>
 
@@ -543,13 +577,14 @@
     const submitBtn = document.getElementById('submitBtn');
     const heroCard = document.getElementById('heroCard');
     const heroBanner = document.getElementById('heroBanner');
+    const learnersSection = document.getElementById('learnersSection');
+    const learnersContainer = document.getElementById('learnersContainer');
 
     let VALID_BATCH_CODE = "TL211126";
 
     const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1114785347&single=true&output=csv";
     const PUBLIC_FEED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1149121719&single=true&output=csv";
 
-    // Strict CSV parser handling quoted cells and multi-line fields
     function parseCSV(text) {
       const rows = [];
       let row = [];
@@ -583,7 +618,6 @@
       return rows;
     }
 
-    // Extract raw URLs from Markdown formatted strings like [Text](Url)
     function extractUrl(str) {
       if (!str) return "";
       const match = str.match(/\((https?:\/\/[^\s\)]+)\)/);
@@ -598,15 +632,30 @@
         const csvText = await res.text();
         const rows = parseCSV(csvText);
 
-        let learnerCount = 0;
-        if (rows.length > 1 && !isNaN(parseInt(rows[1][1]))) {
-          learnerCount = parseInt(rows[1][1]);
-        } else {
-          const validLearners = rows.slice(1).filter(r => r[0] && r[0] !== '-' && r[0] !== '');
-          learnerCount = validLearners.length;
-        }
+        const names = [];
+        rows.forEach((r, idx) => {
+          if (idx === 0) return;
+          const name = r[0] ? r[0].replace(/^\uFEFF/, "").trim() : "";
+          if (name && name !== "-" && name.toLowerCase() !== "full name") {
+            names.push(name);
+          }
+        });
 
-        document.getElementById('learnersCount').textContent = `${learnerCount} learners joined`;
+        const learnerCount = names.length;
+        document.getElementById('learnersCount').textContent = `${learnerCount} learner${learnerCount === 1 ? '' : 's'} joined`;
+
+        if (names.length > 0) {
+          learnersContainer.innerHTML = names.map(name => `
+            <li class="learner-item">
+              <i data-lucide="user-check" size="16"></i>
+              <span>${name}</span>
+            </li>
+          `).join('');
+          learnersSection.style.display = "block";
+          lucide.createIcons();
+        } else {
+          learnersSection.style.display = "none";
+        }
       } catch (e) {
         console.warn("Could not load Public Feed CSV:", e);
       }
@@ -624,7 +673,6 @@
 
         const rows = parseCSV(csvText);
 
-        // Find the first valid course data row (ignoring headers)
         const row = rows.find(r => {
           const batchCol = (r[0] || "").replace(/^\uFEFF/, "").trim();
           return batchCol && batchCol.toLowerCase() !== "batch code" && r[1]?.trim();
@@ -635,13 +683,10 @@
           throw new Error("No course data row found. Check the CSV columns and published tab.");
         }
 
-        // Col 0: Batch Code
         VALID_BATCH_CODE = row[0].replace(/^\uFEFF/, "").trim();
 
-        // Col 1: Course Title
         if (row[1]) document.getElementById("courseTitle").textContent = row[1].trim();
 
-        // Col 2 & 3: Date & Time
         const dateStr = row[2]?.trim() || "";
         const timeStr = row[3]?.trim() || "";
         if (dateStr || timeStr) {
@@ -650,7 +695,6 @@
           document.getElementById("dateTimeItem").style.display = "flex";
         }
 
-        // Col 4: Location / Meet Link
         const rawLink = row[4]?.trim() || "";
         const cleanLink = extractUrl(rawLink);
         if (cleanLink && cleanLink !== "-") {
@@ -659,7 +703,6 @@
           document.getElementById("locationItem").style.display = "flex";
         }
 
-        // Col 5 & 6: Facilitator Name & WhatsApp
         const facilitator = row[5]?.trim() || "";
         const waNumber = (row[6] || "").replace(/[^0-9]/g, "");
         if (facilitator && facilitator !== "-") {
@@ -678,14 +721,12 @@
           document.getElementById("facilitatorItem").style.display = "flex";
         }
 
-        // Col 7: Overview
         const overviewText = row[7]?.trim() || "";
         if (overviewText && overviewText !== "-") {
           document.getElementById("courseOverview").textContent = overviewText;
           document.getElementById("overviewSection").style.display = "block";
         }
 
-        // Col 8: Course Image ID
         const imageId = row[8]?.trim() || "";
         if (imageId && imageId !== "-" && imageId.toLowerCase() !== "undefined") {
           heroBanner.src = `https://lh3.googleusercontent.com/d/${imageId}`;
@@ -694,7 +735,6 @@
           heroCard.style.display = "none";
         }
 
-        // Col 9: Logo Image ID
         const logoId = row[9]?.trim() || "";
         if (logoId && logoId !== "-") {
           document.getElementById("organizerLogo").src =
