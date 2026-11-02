@@ -14,9 +14,12 @@
     :root {
       /* Professional Neutral & Brand Accent Palette */
       --brand-navy: #0f172a;
-      --brand-navy-hover: #1e293b;
       --brand-blue: #0284c7;
       
+      /* Steel Blue Theme for CTA Button */
+      --steel-blue: #4682b4;
+      --steel-blue-hover: #36648b;
+
       --bg-silver: #f1f5f9;
       --surface-white: #ffffff;
       --text-main: #0f172a;
@@ -117,6 +120,7 @@
       border: 1px solid var(--border);
       box-shadow: var(--shadow-sm);
       margin-bottom: 12px;
+      display: block; /* Toggled dynamically in JS */
     }
 
     .hero-image-container {
@@ -169,7 +173,7 @@
       font-weight: 500;
     }
 
-    .meta-item i { color: var(--brand-blue); margin-top: 2px; flex-shrink: 0; }
+    .meta-item i { color: var(--steel-blue); margin-top: 2px; flex-shrink: 0; }
 
     /* Organizer Card */
     .organizer-card {
@@ -207,17 +211,17 @@
       align-items: center;
       justify-content: center;
       padding: 7px 16px;
-      border: 1.5px solid var(--brand-blue);
+      border: 1.5px solid var(--steel-blue);
       border-radius: 6px;
       background-color: #ffffff;
-      color: var(--brand-blue);
+      color: var(--steel-blue);
       font-weight: 700;
       font-size: 13px;
       text-decoration: none;
       transition: all 0.2s;
     }
 
-    .visit-btn:hover { background-color: var(--brand-blue); color: #ffffff; }
+    .visit-btn:hover { background-color: var(--steel-blue); color: #ffffff; }
 
     .divider { height: 1px; background-color: var(--border); margin: 20px 0; }
     .section-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--brand-navy); }
@@ -257,13 +261,13 @@
     }
 
     .batch-input::placeholder { color: #94a3b8; font-weight: 500; }
-    .batch-input:focus { border-color: var(--brand-navy); background-color: #ffffff; }
+    .batch-input:focus { border-color: var(--steel-blue); background-color: #ffffff; }
     .batch-input.is-invalid { border-color: #ef4444; }
     .batch-input.is-valid { border-color: #22c55e; }
 
-    /* BUTTON: Slate Navy CTA */
+    /* BUTTON: Steel Blue CTA */
     .btn-reserve {
-      background-color: var(--brand-navy);
+      background-color: var(--steel-blue);
       color: #ffffff;
       border: none;
       padding: 12px 20px;
@@ -273,13 +277,13 @@
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+      box-shadow: 0 4px 12px rgba(70, 130, 180, 0.3);
     }
 
     .btn-reserve:hover:not(:disabled) {
-      background-color: var(--brand-navy-hover);
+      background-color: var(--steel-blue-hover);
       transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(15, 23, 42, 0.3);
+      box-shadow: 0 6px 15px rgba(70, 130, 180, 0.4);
     }
 
     .btn-reserve:disabled {
@@ -323,11 +327,11 @@
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
     .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; }
-    .form-input:focus { border-color: var(--brand-navy); }
+    .form-input:focus { border-color: var(--steel-blue); }
     
     .submit-btn { 
       width: 100%; 
-      background-color: var(--brand-navy); 
+      background-color: var(--steel-blue); 
       color: white; 
       border: none; 
       padding: 12px; 
@@ -337,7 +341,7 @@
       margin-top: 10px; 
       transition: background-color 0.2s;
     }
-    .submit-btn:hover { background-color: var(--brand-navy-hover); }
+    .submit-btn:hover { background-color: var(--steel-blue-hover); }
 
     .toast {
       position: absolute;
@@ -382,11 +386,13 @@
 
     <!-- Scrollable Content (Silver Background with White Cards) -->
     <div class="content-scroll">
-      <div class="hero-card">
+      
+      <!-- Hero Image Card (Hidden dynamically if no image ID) -->
+      <div class="hero-card" id="heroCard">
         <div class="hero-image-container">
           <img 
             id="heroBanner"
-            src="https://lh3.googleusercontent.com/d/18PQ4nYxcX4mM-_5QIPs_6gZFC5KFWieU" 
+            src="" 
             alt="Course Banner" 
             class="hero-image"
           />
@@ -522,6 +528,8 @@
     const batchCodeInput = document.getElementById('batchCodeInput');
     const batchCodeFormInput = document.getElementById('batchCodeFormInput');
     const submitBtn = document.getElementById('submitBtn');
+    const heroCard = document.getElementById('heroCard');
+    const heroBanner = document.getElementById('heroBanner');
 
     let VALID_BATCH_CODE = "TL211126";
 
@@ -572,8 +580,19 @@
           document.getElementById('eventLink').textContent = row[4] || "Online Event (Free)";
           document.getElementById('courseOverview').textContent = row[7] || "";
           
-          if (row[8]) document.getElementById('heroBanner').src = `https://lh3.googleusercontent.com/d/${row[8]}`;
-          if (row[9]) document.getElementById('organizerLogo').src = `https://lh3.googleusercontent.com/d/${row[9]}`;
+          // CONDITIONAL BANNER RENDER: Check if Banner Image ID exists (Col I / row[8])
+          const imageId = row[8] ? row[8].trim() : "";
+          if (imageId && imageId !== "-" && imageId !== "undefined") {
+            heroBanner.src = `https://lh3.googleusercontent.com/d/${imageId}`;
+            heroCard.style.display = "block";
+          } else {
+            // Hide hero banner container completely if no image ID provided
+            heroCard.style.display = "none";
+          }
+
+          if (row[9]) {
+            document.getElementById('organizerLogo').src = `https://lh3.googleusercontent.com/d/${row[9]}`;
+          }
         }
       } catch (e) {
         console.warn("Could not load Master Courses CSV:", e);
