@@ -12,11 +12,8 @@
 
   <style>
     :root {
-      /* Professional Neutral & Brand Accent Palette */
       --brand-navy: #0f172a;
       --brand-blue: #0284c7;
-      
-      /* Steel Blue Theme for CTA Button */
       --steel-blue: #4682b4;
       --steel-blue-hover: #36648b;
 
@@ -53,7 +50,6 @@
       overflow: hidden;
     }
 
-    /* TOP BAR: Clean White */
     .top-bar {
       height: 56px;
       padding: 0 16px;
@@ -80,7 +76,6 @@
     }
 
     .back-btn:hover { opacity: 0.8; }
-
     .action-icons { display: flex; align-items: center; gap: 12px; }
 
     .icon-btn {
@@ -98,7 +93,6 @@
 
     .icon-btn:hover { background: #ffffff; border-color: #cbd5e1; }
 
-    /* CONTENT SCROLL: Silver Background with White Content Cards */
     .content-scroll {
       flex: 1;
       background: var(--bg-silver);
@@ -106,14 +100,12 @@
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
       padding: 12px 12px 110px 12px;
-      
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
 
     .content-scroll::-webkit-scrollbar { display: none; }
 
-    /* Hidden by default to prevent broken image flash */
     .hero-card {
       background: #ffffff;
       border-radius: 12px;
@@ -176,7 +168,6 @@
 
     .meta-item i { color: var(--steel-blue); margin-top: 2px; flex-shrink: 0; }
 
-    /* Facilitator WhatsApp Button */
     .wa-btn {
       display: inline-flex;
       align-items: center;
@@ -193,7 +184,6 @@
     }
     .wa-btn:hover { opacity: 0.9; }
 
-    /* Organizer Card */
     .organizer-card {
       display: flex;
       align-items: center;
@@ -242,11 +232,10 @@
     .visit-btn:hover { background-color: var(--steel-blue); color: #ffffff; }
 
     .divider { height: 1px; background-color: var(--border); margin: 20px 0; }
-    .overview-section { display: none; } /* Shown conditionally */
+    .overview-section { display: none; }
     .section-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: var(--brand-navy); }
     .overview-text { color: #475569; font-size: 14px; line-height: 1.6; }
 
-    /* BOTTOM BAR: Clean White */
     .bottom-bar {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -284,7 +273,6 @@
     .batch-input.is-invalid { border-color: #ef4444; }
     .batch-input.is-valid { border-color: #22c55e; }
 
-    /* BUTTON: Steel Blue CTA */
     .btn-reserve {
       background-color: var(--steel-blue);
       color: #ffffff;
@@ -381,7 +369,6 @@
   <div class="app-container">
     <div class="toast" id="toast">Link copied to clipboard!</div>
 
-    <!-- Hidden target iframe for cross-domain Google Form POST -->
     <iframe 
       name="hidden_iframe" 
       id="hidden_iframe" 
@@ -389,7 +376,7 @@
       onload="if(submitted){ handleSubmissionSuccess(); }">
     </iframe>
 
-    <!-- Top Bar (White Header) -->
+    <!-- Top Bar -->
     <header class="top-bar">
       <a href="https://www.thinkingskill.in" class="back-btn">
         <i data-lucide="arrow-left" size="18"></i>
@@ -419,7 +406,7 @@
       </div>
 
       <main class="main-content-card">
-        <h1 class="event-title" id="courseTitle">Google Flow for Beginners</h1>
+        <h1 class="event-title" id="courseTitle">Loading Course...</h1>
 
         <div class="meta-list">
           <div class="meta-item" id="locationItem" style="display: none;">
@@ -428,14 +415,14 @@
           </div>
           <div class="meta-item" id="dateTimeItem" style="display: none;">
             <i data-lucide="calendar" size="18"></i>
-            <span id="eventDateTime">Sat, Nov 21st • 10-11am IST</span>
+            <span id="eventDateTime"></span>
           </div>
 
           <!-- Facilitator & Contact WhatsApp Row -->
           <div class="meta-item" id="facilitatorItem" style="display: none;">
             <i data-lucide="user" size="18"></i>
-            <div>
-              <span id="facilitatorName">Facilitator Name</span>
+            <div style="display: flex; align-items: center; flex-wrap: wrap;">
+              <span id="facilitatorName"></span>
               <a href="#" id="facilitatorWALink" target="_blank" class="wa-btn">
                 💬 WhatsApp
               </a>
@@ -471,7 +458,7 @@
       </main>
     </div>
 
-    <!-- Bottom Reservation Bar (White) -->
+    <!-- Bottom Reservation Bar -->
     <footer class="bottom-bar">
       <div class="batch-input-wrapper">
         <input 
@@ -545,7 +532,6 @@
 
     var submitted = false;
 
-    // DOM Elements
     const modalOverlay = document.getElementById('modalOverlay');
     const openModalBtn = document.getElementById('openModalBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
@@ -563,11 +549,47 @@
     const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1114785347&single=true&output=csv";
     const PUBLIC_FEED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1149121719&single=true&output=csv";
 
+    // Enhanced CSV Parser handling quotes and internal commas
     function parseCSV(text) {
-      return text.split('\n')
-        .map(row => row.trim())
-        .filter(row => row.length > 0)
-        .map(row => row.split(',').map(cell => cell.replace(/^"|"$/g, '').trim()));
+      const rows = [];
+      let row = [];
+      let field = '';
+      let inQuote = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        const next = text[i+1];
+
+        if (c === '"') {
+          if (inQuote && next === '"') { field += '"'; i++; }
+          else { inQuote = !inQuote; }
+        } else if (c === ',' && !inQuote) {
+          row.push(field.trim());
+          field = '';
+        } else if ((c === '\n' || c === '\r') && !inQuote) {
+          if (c === '\r' && next === '\n') { i++; }
+          row.push(field.trim());
+          if (row.some(r => r !== '')) rows.push(row);
+          row = [];
+          field = '';
+        } else {
+          field += c;
+        }
+      }
+      if (field !== '' || row.length > 0) {
+        row.push(field.trim());
+        if (row.some(r => r !== '')) rows.push(row);
+      }
+      return rows;
+    }
+
+    // Clean Markdown Links into raw URLs
+    function extractUrl(str) {
+      if (!str) return "";
+      const match = str.match(/\((https?:\/\/[^\s\)]+)\)/);
+      if (match) return match[1];
+      if (str.startsWith("http://") || str.startsWith("https://")) return str;
+      return str;
     }
 
     async function loadPublicFeed() {
@@ -599,11 +621,13 @@
         if (rows.length > 1) {
           const row = rows[1];
 
-          // 1. Batch Code & Title
+          // Column 0: Batch Code
           VALID_BATCH_CODE = row[0] ? row[0].trim() : VALID_BATCH_CODE;
+
+          // Column 1: Course Title
           if (row[1]) document.getElementById('courseTitle').textContent = row[1].trim();
 
-          // 2. Date & Time
+          // Column 2 & 3: Date & Time
           const dateStr = row[2] ? row[2].trim() : "";
           const timeStr = row[3] ? row[3].trim() : "";
           if (dateStr || timeStr) {
@@ -611,51 +635,51 @@
             document.getElementById('dateTimeItem').style.display = 'flex';
           }
 
-          // 3. Location / Link
-          const locationStr = row[4] ? row[4].trim() : "";
-          if (locationStr && locationStr !== "-") {
-            document.getElementById('eventLink').textContent = locationStr;
+          // Column 4: Meet Link / Location
+          const rawLink = row[4] ? row[4].trim() : "";
+          const cleanLink = extractUrl(rawLink);
+          if (cleanLink && cleanLink !== "-") {
+            document.getElementById('eventLink').textContent = cleanLink.startsWith("http") ? "Online Event (Free)" : cleanLink;
             document.getElementById('locationItem').style.display = 'flex';
           }
 
-          // 4. Facilitator & WhatsApp
+          // Column 5 & 6: Facilitator & WhatsApp
           const facilitator = row[5] ? row[5].trim() : "";
           const waNumber = row[6] ? row[6].replace(/[^0-9]/g, '') : "";
           if (facilitator && facilitator !== "-") {
             document.getElementById('facilitatorName').textContent = facilitator;
-            const waLink = document.getElementById('facilitatorWALink');
+            const waBtn = document.getElementById('facilitatorWALink');
             
             if (waNumber) {
-              const msg = encodeURIComponent(`Hi ${facilitator}, I have a query regarding ${document.getElementById('courseTitle').textContent}`);
-              waLink.href = `https://wa.me/${waNumber}?text=${msg}`;
-              waLink.style.display = 'inline-flex';
+              const msg = encodeURIComponent(`Hi ${facilitator}, I registered for ${document.getElementById('courseTitle').textContent}.`);
+              waBtn.href = `https://wa.me/${waNumber}?text=${msg}`;
+              waBtn.style.display = 'inline-flex';
             } else {
-              waLink.style.display = 'none';
+              waBtn.style.display = 'none';
             }
             document.getElementById('facilitatorItem').style.display = 'flex';
           }
 
-          // 5. Overview Text
+          // Column 7: Overview
           const overviewText = row[7] ? row[7].trim() : "";
           if (overviewText && overviewText !== "-") {
             document.getElementById('courseOverview').textContent = overviewText;
             document.getElementById('overviewSection').style.display = 'block';
           }
 
-          // 6. Dynamic Hero Image
+          // Column 8: Course Image ID
           const imageId = row[8] ? row[8].trim() : "";
           if (imageId && imageId !== "-" && imageId.toLowerCase() !== "undefined") {
-            // Using Google Drive Thumbnail URL for reliable cross-domain rendering
-            heroBanner.src = `https://drive.google.com/thumbnail?id=${imageId}&sz=w1000`;
+            heroBanner.src = `https://lh3.googleusercontent.com/d/${imageId}`;
             heroCard.style.display = "block";
           } else {
             heroCard.style.display = "none";
           }
 
-          // 7. Organizer Logo
+          // Column 9: Logo Image ID
           const logoId = row[9] ? row[9].trim() : "";
           if (logoId && logoId !== "-") {
-            document.getElementById('organizerLogo').src = `https://drive.google.com/thumbnail?id=${logoId}&sz=w200`;
+            document.getElementById('organizerLogo').src = `https://lh3.googleusercontent.com/d/${logoId}`;
           }
         }
       } catch (e) {
@@ -667,7 +691,6 @@
     loadMasterCourses();
     loadPublicFeed();
 
-    // Batch Code Validation
     batchCodeInput.addEventListener('input', () => {
       const enteredCode = batchCodeInput.value.trim().toUpperCase();
 
