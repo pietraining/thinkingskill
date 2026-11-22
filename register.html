@@ -414,6 +414,18 @@
     .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
     .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; }
     .form-input:focus { border-color: var(--steel-blue); }
+
+    .form-error {
+      display: none;
+      background-color: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
     
     .submit-btn { 
       width: 100%; 
@@ -427,7 +439,8 @@
       margin-top: 10px; 
       transition: background-color 0.2s;
     }
-    .submit-btn:hover { background-color: var(--steel-blue-hover); }
+    .submit-btn:hover:not(:disabled) { background-color: var(--steel-blue-hover); }
+    .submit-btn:disabled { background-color: #94a3b8; cursor: not-allowed; }
 
     /* Custom Acknowledgement Dialog Modal */
     .ack-modal-overlay {
@@ -522,13 +535,6 @@
 
   <div class="app-container">
     <div class="toast" id="toast">Link copied to clipboard!</div>
-
-    <iframe 
-      name="hidden_iframe" 
-      id="hidden_iframe" 
-      style="display:none;" 
-      onload="if(submitted){ handleSubmissionSuccess(); }">
-    </iframe>
 
     <!-- Top Bar -->
     <header class="top-bar">
@@ -645,19 +651,14 @@
           </button>
         </div>
 
-        <form 
-          id="bookingForm"
-          action="https://docs.google.com/forms/d/e/1FAIpQLScliz0hmsuSd30UhjTuowFlcUVXcKO7oDgsGRyKo7xzL-YYjw/formResponse"
-          method="POST"
-          target="hidden_iframe"
-          onsubmit="submitted=true;">
+        <form id="bookingForm">
+          <div class="form-error" id="formErrorMsg"></div>
 
           <div class="form-group">
             <label class="form-label" for="nameInput">Full Name</label>
             <input 
               type="text" 
               id="nameInput" 
-              name="entry.1284435015" 
               class="form-input" 
               placeholder="Learner Name" 
               required 
@@ -669,19 +670,11 @@
             <input 
               type="email" 
               id="emailInput" 
-              name="entry.1988767158" 
               class="form-input" 
               placeholder="Learner Email" 
               required 
             />
           </div>
-
-          <input 
-            type="hidden" 
-            id="batchCodeFormInput" 
-            name="entry.2046668482" 
-            value="" 
-          />
 
           <button type="submit" class="submit-btn" id="submitBtn">Confirm Registration</button>
         </form>
@@ -704,8 +697,6 @@
   <script>
     lucide.createIcons();
 
-    var submitted = false;
-
     const modalOverlay = document.getElementById('modalOverlay');
     const openModalBtn = document.getElementById('openModalBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
@@ -713,8 +704,8 @@
     const shareBtn = document.getElementById('shareBtn');
     const toast = document.getElementById('toast');
     const batchCodeInput = document.getElementById('batchCodeInput');
-    const batchCodeFormInput = document.getElementById('batchCodeFormInput');
     const submitBtn = document.getElementById('submitBtn');
+    const formErrorMsg = document.getElementById('formErrorMsg');
     const heroCard = document.getElementById('heroCard');
     const heroBanner = document.getElementById('heroBanner');
     const dropdownLearnersContainer = document.getElementById('dropdownLearnersContainer');
@@ -722,7 +713,8 @@
     const ackModalOverlay = document.getElementById('ackModalOverlay');
     const ackOkBtn = document.getElementById('ackOkBtn');
 
-    let VALID_BATCH_CODE = "TL211126";
+    // Replace with your deployed Google Apps Script Web App (/exec) URL
+    const APPS_SCRIPT_URL = "PASTE_YOUR_WEB_APP_EXEC_URL_HERE";
 
     const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1114785347&single=true&output=csv";
     const PUBLIC_FEED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1149121719&single=true&output=csv";
@@ -818,17 +810,17 @@
 
         const rows = parseCSV(csvText);
 
-        const row = rows.find(r => {
-          const batchCol = (r[0] || "").replace(/^\uFEFF/, "").trim();
-          return batchCol && batchCol.toLowerCase() !== "batch code" && r[1]?.trim();
+        // Find the first non-header row that has a course title in Column B (index 1)
+        const row = rows.find((r, idx) => {
+          if (idx === 0) return false;
+          const titleCol = (r[1] || "").replace(/^\uFEFF/, "").trim();
+          return titleCol && titleCol.toLowerCase() !== "course title";
         });
 
         if (!row) {
           console.error("No course row found in Master CSV:", rows);
           throw new Error("No course data row found. Check the CSV columns and published tab.");
         }
-
-        VALID_BATCH_CODE = row[0].replace(/^\uFEFF/, "").trim();
 
         if (row[1]) document.getElementById("courseTitle").textContent = row[1].trim();
 
@@ -855,7 +847,6 @@
         if (facilitator && facilitator !== "-") {
           const nameContainer = document.getElementById("facilitatorName");
           
-          // Render as hyperlink if URL exists in Column K, otherwise plain text
           if (facilitatorUrl && facilitatorUrl.startsWith("http")) {
             nameContainer.innerHTML = `<a href="${facilitatorUrl}" target="_blank" class="facilitator-link">${facilitator}</a>`;
           } else {
@@ -894,8 +885,6 @@
           document.getElementById("organizerLogo").src =
             `https://lh3.googleusercontent.com/d/${logoId}`;
         }
-
-        console.log("Loaded course row from Master CSV:", row);
       } catch (e) {
         console.error("Could not load Master Courses CSV:", e);
         document.getElementById("courseTitle").textContent = "Course information unavailable";
@@ -906,22 +895,11 @@
     loadMasterCourses();
     loadPublicFeed();
 
+    // Enable button once a code is typed; server-side Apps Script verifies accuracy
     batchCodeInput.addEventListener('input', () => {
-      const enteredCode = batchCodeInput.value.trim().toUpperCase();
-
-      if (enteredCode === VALID_BATCH_CODE) {
-        openModalBtn.disabled = false;
-        batchCodeInput.classList.remove('is-invalid');
-        batchCodeInput.classList.add('is-valid');
-      } else {
-        openModalBtn.disabled = true;
-        batchCodeInput.classList.remove('is-valid');
-        if (enteredCode.length >= VALID_BATCH_CODE.length) {
-          batchCodeInput.classList.add('is-invalid');
-        } else {
-          batchCodeInput.classList.remove('is-invalid');
-        }
-      }
+      const enteredCode = batchCodeInput.value.trim();
+      batchCodeInput.classList.remove('is-invalid');
+      openModalBtn.disabled = enteredCode.length < 4;
     });
 
     function showToast(message) {
@@ -930,9 +908,19 @@
       setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
+    function showFormError(msg) {
+      formErrorMsg.textContent = msg;
+      formErrorMsg.style.display = 'block';
+    }
+
+    function clearFormError() {
+      formErrorMsg.textContent = '';
+      formErrorMsg.style.display = 'none';
+    }
+
     openModalBtn.addEventListener('click', () => {
       if (!openModalBtn.disabled) {
-        batchCodeFormInput.value = batchCodeInput.value.trim().toUpperCase();
+        clearFormError();
         modalOverlay.classList.add('open');
       }
     });
@@ -943,20 +931,46 @@
       if (e.target === modalOverlay) modalOverlay.classList.remove('open');
     });
 
-    function handleSubmissionSuccess() {
-      if (!submitted) return;
-      
-      modalOverlay.classList.remove('open');
-      bookingForm.reset();
+    bookingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearFormError();
 
-      ackModalOverlay.classList.add('open');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifying...';
 
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Confirm Registration';
-      submitted = false;
+      const payload = {
+        name: document.getElementById('nameInput').value.trim(),
+        email: document.getElementById('emailInput').value.trim(),
+        batchCode: batchCodeInput.value.trim().toUpperCase()
+      };
 
-      setTimeout(loadPublicFeed, 2500);
-    }
+      try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          modalOverlay.classList.remove('open');
+          bookingForm.reset();
+          batchCodeInput.value = '';
+          openModalBtn.disabled = true;
+          ackModalOverlay.classList.add('open');
+          setTimeout(loadPublicFeed, 2500);
+        } else {
+          showFormError(result.message || "Invalid Batch Code. Please check and try again.");
+          batchCodeInput.classList.add('is-invalid');
+        }
+      } catch (error) {
+        showFormError("Network error while verifying registration. Please try again.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Confirm Registration';
+      }
+    });
 
     ackOkBtn.addEventListener('click', () => {
       ackModalOverlay.classList.remove('open');
