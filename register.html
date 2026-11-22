@@ -716,67 +716,72 @@
     // Replace with your deployed Google Apps Script Web App (/exec) URL
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqUDRDDqLI2ChIaSHsJEsAdU6oBOIFiyafuxdCjcT-5lZBW3Dog-o73IMypN_kj6hzVw/exec";
 
-    const MASTER_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1114785347&single=true&output=csv";
-    const PUBLIC_FEED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQa1DwC7x54wuxZJoYFBhCt8SzHBpkWuqyH7XQIcMzdjj6_VXBl1DOJne8oaX4jcujrrpTJlvj_E9qM/pub?gid=1149121719&single=true&output=csv";
+    let dropdownListenerAttached = false;
 
-    function parseCSV(text) {
-      const rows = [];
-      let row = [];
-      let field = '';
-      let inQuote = false;
-
-      for (let i = 0; i < text.length; i++) {
-        const c = text[i];
-        const next = text[i+1];
-
-        if (c === '"') {
-          if (inQuote && next === '"') { field += '"'; i++; }
-          else { inQuote = !inQuote; }
-        } else if (c === ',' && !inQuote) {
-          row.push(field.trim());
-          field = '';
-        } else if ((c === '\n' || c === '\r') && !inQuote) {
-          if (c === '\r' && next === '\n') { i++; }
-          row.push(field.trim());
-          if (row.some(r => r !== '')) rows.push(row);
-          row = [];
-          field = '';
-        } else {
-          field += c;
-        }
-      }
-      if (field !== '' || row.length > 0) {
-        row.push(field.trim());
-        if (row.some(r => r !== '')) rows.push(row);
-      }
-      return rows;
-    }
-
-    function extractUrl(str) {
-      if (!str) return "";
-      const match = str.match(/\((https?:\/\/[^\s\)]+)\)/);
-      if (match) return match[1];
-      if (str.startsWith("http://") || str.startsWith("https://")) return str;
-      return str;
-    }
-
-    async function loadPublicFeed() {
+    async function loadPageData() {
       try {
-        const res = await fetch(PUBLIC_FEED_CSV_URL, { cache: "no-store" });
-        const csvText = await res.text();
-        const rows = parseCSV(csvText);
+        const res = await fetch(APPS_SCRIPT_URL, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        const names = [];
-        rows.forEach((r, idx) => {
-          if (idx === 0) return;
-          const name = r[0] ? r[0].replace(/^\uFEFF/, "").trim() : "";
-          if (name && name !== "-" && name.toLowerCase() !== "full name") {
-            names.push(name);
+        const data = await res.json();
+        if (data.status !== "ok" || !data.course) {
+          throw new Error("Course data missing from Apps Script response.");
+        }
+
+        const c = data.course;
+
+        // 1. Populate Safe Course Details
+        document.getElementById("courseTitle").textContent = c.title;
+
+        if (c.date || c.time) {
+          document.getElementById("eventDateTime").textContent =
+            `${c.date} ${c.time ? "• " + c.time : ""}`.trim();
+          document.getElementById("dateTimeItem").style.display = "flex";
+        }
+
+        if (c.hasOnlineLink) {
+          document.getElementById("eventLink").textContent = "Online Class (Free)";
+          document.getElementById("locationItem").style.display = "flex";
+        }
+
+        if (c.facilitator && c.facilitator !== "-") {
+          const nameContainer = document.getElementById("facilitatorName");
+          if (c.facilitatorUrl && c.facilitatorUrl.startsWith("http")) {
+            nameContainer.innerHTML = `<a href="${c.facilitatorUrl}" target="_blank" class="facilitator-link">${c.facilitator}</a>`;
+          } else {
+            nameContainer.textContent = c.facilitator;
           }
-        });
 
-        const learnerCount = names.length;
-        document.getElementById('learnersCount').textContent = `Learners (${learnerCount})`;
+          const waBtn = document.getElementById("facilitatorWALink");
+          if (c.whatsapp) {
+            const msg = encodeURIComponent(`Hi ${c.facilitator}, I registered for ${c.title}.`);
+            waBtn.href = `https://wa.me/${c.whatsapp}?text=${msg}`;
+            waBtn.style.display = "inline-flex";
+          } else {
+            waBtn.style.display = "none";
+          }
+          document.getElementById("facilitatorItem").style.display = "flex";
+        }
+
+        if (c.overview && c.overview !== "-") {
+          document.getElementById("courseOverview").textContent = c.overview;
+          document.getElementById("overviewSection").style.display = "block";
+        }
+
+        if (c.imageId && c.imageId !== "-" && c.imageId.toLowerCase() !== "undefined") {
+          heroBanner.src = `https://lh3.googleusercontent.com/d/${c.imageId}`;
+          heroCard.style.display = "block";
+        } else {
+          heroCard.style.display = "none";
+        }
+
+        if (c.logoId && c.logoId !== "-") {
+          document.getElementById("organizerLogo").src = `https://lh3.googleusercontent.com/d/${c.logoId}`;
+        }
+
+        // 2. Populate Registered Learners List
+        const names = data.learners || [];
+        document.getElementById('learnersCount').textContent = `Learners (${names.length})`;
 
         if (names.length > 0) {
           dropdownLearnersContainer.innerHTML = names.map(name => `
@@ -785,117 +790,27 @@
               <span>${name}</span>
             </li>
           `).join('');
-          
-          learnersDropdown.addEventListener('toggle', () => {
-            dropdownLearnersContainer.style.display = learnersDropdown.open ? 'flex' : 'none';
-          });
+
+          if (!dropdownListenerAttached) {
+            learnersDropdown.addEventListener('toggle', () => {
+              dropdownLearnersContainer.style.display = learnersDropdown.open ? 'flex' : 'none';
+            });
+            dropdownListenerAttached = true;
+          }
           lucide.createIcons();
         } else {
           dropdownLearnersContainer.style.display = 'none';
         }
+
       } catch (e) {
-        console.warn("Could not load Public Feed CSV:", e);
-      }
-    }
-
-    async function loadMasterCourses() {
-      try {
-        const res = await fetch(MASTER_CSV_URL, { cache: "no-store" });
-        if (!res.ok) throw new Error(`Sheet request failed: HTTP ${res.status}`);
-
-        const csvText = await res.text();
-        if (csvText.trimStart().startsWith("<")) {
-          throw new Error("Google returned a webpage instead of CSV. Check publishing and the sheet URL.");
-        }
-
-        const rows = parseCSV(csvText);
-
-        // Find the first non-header row that has a course title in Column B (index 1)
-        const row = rows.find((r, idx) => {
-          if (idx === 0) return false;
-          const titleCol = (r[1] || "").replace(/^\uFEFF/, "").trim();
-          return titleCol && titleCol.toLowerCase() !== "course title";
-        });
-
-        if (!row) {
-          console.error("No course row found in Master CSV:", rows);
-          throw new Error("No course data row found. Check the CSV columns and published tab.");
-        }
-
-        if (row[1]) document.getElementById("courseTitle").textContent = row[1].trim();
-
-        const dateStr = row[2]?.trim() || "";
-        const timeStr = row[3]?.trim() || "";
-        if (dateStr || timeStr) {
-          document.getElementById("eventDateTime").textContent =
-            `${dateStr} ${timeStr ? "• " + timeStr : ""}`.trim();
-          document.getElementById("dateTimeItem").style.display = "flex";
-        }
-
-        const rawLink = row[4]?.trim() || "";
-        const cleanLink = extractUrl(rawLink);
-        if (cleanLink && cleanLink !== "-") {
-          document.getElementById("eventLink").textContent =
-            cleanLink.startsWith("http") ? "Online Class (Free)" : cleanLink;
-          document.getElementById("locationItem").style.display = "flex";
-        }
-
-        const facilitator = row[5]?.trim() || "";
-        const waNumber = (row[6] || "").replace(/[^0-9]/g, "");
-        const facilitatorUrl = row[10]?.trim() || ""; // Column K (Index 10)
-
-        if (facilitator && facilitator !== "-") {
-          const nameContainer = document.getElementById("facilitatorName");
-          
-          if (facilitatorUrl && facilitatorUrl.startsWith("http")) {
-            nameContainer.innerHTML = `<a href="${facilitatorUrl}" target="_blank" class="facilitator-link">${facilitator}</a>`;
-          } else {
-            nameContainer.textContent = facilitator;
-          }
-
-          const waBtn = document.getElementById("facilitatorWALink");
-          if (waNumber) {
-            const msg = encodeURIComponent(
-              `Hi ${facilitator}, I registered for ${document.getElementById("courseTitle").textContent}.`
-            );
-            waBtn.href = `https://wa.me/${waNumber}?text=${msg}`;
-            waBtn.style.display = "inline-flex";
-          } else {
-            waBtn.style.display = "none";
-          }
-          document.getElementById("facilitatorItem").style.display = "flex";
-        }
-
-        const overviewText = row[7]?.trim() || "";
-        if (overviewText && overviewText !== "-") {
-          document.getElementById("courseOverview").textContent = overviewText;
-          document.getElementById("overviewSection").style.display = "block";
-        }
-
-        const imageId = row[8]?.trim() || "";
-        if (imageId && imageId !== "-" && imageId.toLowerCase() !== "undefined") {
-          heroBanner.src = `https://lh3.googleusercontent.com/d/${imageId}`;
-          heroCard.style.display = "block";
-        } else {
-          heroCard.style.display = "none";
-        }
-
-        const logoId = row[9]?.trim() || "";
-        if (logoId && logoId !== "-") {
-          document.getElementById("organizerLogo").src =
-            `https://lh3.googleusercontent.com/d/${logoId}`;
-        }
-      } catch (e) {
-        console.error("Could not load Master Courses CSV:", e);
+        console.error("Could not load course data:", e);
         document.getElementById("courseTitle").textContent = "Course information unavailable";
         heroCard.style.display = "none";
       }
     }
 
-    loadMasterCourses();
-    loadPublicFeed();
+    loadPageData();
 
-    // Enable button once a code is typed; server-side Apps Script verifies accuracy
     batchCodeInput.addEventListener('input', () => {
       const enteredCode = batchCodeInput.value.trim();
       batchCodeInput.classList.remove('is-invalid');
@@ -959,7 +874,7 @@
           batchCodeInput.value = '';
           openModalBtn.disabled = true;
           ackModalOverlay.classList.add('open');
-          setTimeout(loadPublicFeed, 2500);
+          setTimeout(loadPageData, 1000);
         } else {
           showFormError(result.message || "Invalid Batch Code. Please check and try again.");
           batchCodeInput.classList.add('is-invalid');
