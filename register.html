@@ -747,9 +747,9 @@
         if (c.facilitator && c.facilitator !== "-") {
           const nameContainer = document.getElementById("facilitatorName");
           if (c.facilitatorUrl && c.facilitatorUrl.startsWith("http")) {
-            nameContainer.innerHTML = `<a href="${c.facilitatorUrl}" target="_blank" class="facilitator-link">${c.facilitator}</a>`;
+            nameContainer.innerHTML = `Facilitator:<a href="${c.facilitatorUrl}" target="_blank" class="facilitator-link">${c.facilitator}</a>`;
           } else {
-            nameContainer.textContent = c.facilitator;
+            nameContainer.textContent = `Facilitator: ${c.facilitator}`;
           }
 
           const waBtn = document.getElementById("facilitatorWALink");
